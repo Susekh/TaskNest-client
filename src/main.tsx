@@ -13,13 +13,28 @@ import HandleGithubOauth from './components/HandleGithubOauth.tsx'
 import HandleGoogleOauth from './components/HandleGoogleOauth.tsx'
 import ContentShimmer from './components/loaders/shimmers/ContentShimmer.tsx'
 import Profile from './pages/Profile.tsx'
+import ForgotPassword from './pages/ForgotPassword.tsx'
+import ResetPassword from './pages/ResetPassword.tsx'
+import EditProfile from './pages/EditProfile.tsx'
+import Dashboard from './pages/Dashboard.tsx'
+import Project from './components/projects/Project.tsx'
+import Sprint from './components/sprints/Sprint.tsx'
+import ErrorPage from './pages/ErrorPage.tsx'
+import TaskPage from './pages/TaskPage.tsx'
+import InviteToProject from './pages/InviteToProject.tsx'
+import Conversations from './pages/Conversations.tsx'
 
 
 const router = createBrowserRouter([
   {
     path : '/',
     element : <App />,
+    errorElement : <ErrorPage/>,
     children : [
+      {
+        path: '*',
+        element: <ErrorPage />,
+      },
       {
         index : true,
         element : (
@@ -34,7 +49,23 @@ const router = createBrowserRouter([
           <ProtectRoutes isProtected={true}>
             <Auth />
           </ProtectRoutes>
-        ),
+        )
+      },
+      {
+        path : '/dashboard',
+        element : (
+          <ProtectRoutes isProtected={true}>
+            <Dashboard/>
+          </ProtectRoutes>
+        )
+      },
+      {
+        path : '/auth/forgot-password',
+        element : <ForgotPassword/>
+      },
+      {
+        path : '/auth/reset-password/:token',
+        element : <ResetPassword/>
       },
       {
         path : '/shop',
@@ -50,7 +81,47 @@ const router = createBrowserRouter([
           <ProtectRoutes isProtected={true}>
             <Profile/>
           </ProtectRoutes>
-        )//Todo : show option to change password or set password if they are logged in using oauth -> also option to edit other details
+        )
+      },
+      {
+        path : '/profile/edit',
+        element : (
+          <ProtectRoutes isProtected={true} >
+            <EditProfile/>
+          </ProtectRoutes>
+        )
+      },
+      {
+        path: '/projects/:projectId',
+        element: (
+          <ProtectRoutes isProtected={true}>
+            <Project />
+          </ProtectRoutes>
+        ),
+      },
+      {
+        path : '/projects/:projectId/invite/:inviteCode',
+        element : (
+          <ProtectRoutes isProtected={true} >
+            <InviteToProject />
+          </ProtectRoutes>
+        )
+      },
+      {
+        path: '/projects/:projectId/sprints/:sprintId',
+        element: (
+          <ProtectRoutes isProtected={true}>
+            <Sprint />
+          </ProtectRoutes>
+        ),
+      },
+      {
+        path: '/projects/:projectId/sprints/:sprintId/task/:taskId',
+        element: (
+          <ProtectRoutes isProtected={true}>
+            <TaskPage />
+          </ProtectRoutes>
+        ),
       },
       {
         path: 'auth/oauth',
@@ -73,6 +144,14 @@ const router = createBrowserRouter([
           </ProtectRoutes>
         )
       },
+      {
+        path : '/conversations/:roomId',
+        element : (
+          <ProtectRoutes isProtected={true}>
+            <Conversations/>
+          </ProtectRoutes>
+        )
+      }
     ]
   }
 ])

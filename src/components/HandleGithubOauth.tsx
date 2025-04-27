@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { login } from "@/store/userSlice";
 
 
-
 function HandleGithubOauth() {
 
   const dispatch = useDispatch();
@@ -34,7 +33,7 @@ function HandleGithubOauth() {
 
             if (res.statusCode === 201) {
               dispatch(login(res.user));
-              navigate('/profile');
+              navigate('/dashboard');
             }
           } catch (error) {
             console.error("Error during GitHub OAuth:", error);

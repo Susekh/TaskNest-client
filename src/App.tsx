@@ -7,10 +7,10 @@ import { Toaster } from 'react-hot-toast';
 
 function App() {
 
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
   return (
-    <div className={`${isDark ? "dark" : " "} min-h-screen flex flex-col` }>
+    <div className={`${isDark ? "dark" : " "} flex flex-col` }>
       <Navbar isDark={isDark} setIsDark={setIsDark} />
         <main>
           <Outlet/>

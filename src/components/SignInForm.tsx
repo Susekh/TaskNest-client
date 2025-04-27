@@ -98,7 +98,7 @@ function SignInForm({setIsSignIn} : props) {
       }
       
       toast.success(`${data.successMsg}`);
-      navigate("/");
+      navigate("/dashboard");
     }
 
     setIsLoading(false);
@@ -133,6 +133,7 @@ function SignInForm({setIsSignIn} : props) {
               <FormControl>
                 <Input type={showPassword? "text" : "password"} placeholder="password" {...field} />
               </FormControl>
+              <button type="button" onClick={() => navigate('/auth/forgot-password')} className="hover:underline text-sm block ml-auto text-blue-600 hover:text-blue-800 duration-100">Forgot Password?</button>
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-500 absolute top-8 right-3">{showPassword ? <EyeOff/> : <Eye/>}</button>
               <FormMessage />
             </FormItem>

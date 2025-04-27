@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./userSlice";
+import memberSlice from "./MemberSlice"
 
 export type RootState = ReturnType<typeof store.getState>;
 
 const store = configureStore({
     reducer : {
         user : userSlice,
+        member : memberSlice
     },
 });
 

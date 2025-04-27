@@ -1,93 +1,67 @@
 import IsAuthenticated from '@/auth/IsAuthenticated';
 import { RootState } from '@/store/store';
 import { login, logout } from '@/store/userSlice';
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ContentShimmer from './loaders/shimmers/ContentShimmer';
 
-type props = {
-    children : ReactNode,
-    isProtected : boolean
-}
-type userType = {
-    id : number,
-    createdAt : Date,
-    username : string,
-    imgUrl? : string,
-    email? : string,
-}
+type Props = {
+  children: ReactNode;
+  isProtected: boolean;
+};
+
+type UserType = {
+  id: number;
+  createdAt: Date;
+  username: string;
+  imgUrl?: string;
+  email?: string;
+};
 
 type UserLoggedInResponse = {
-    status : boolean,
-    userData : userType,
-}
+  status: boolean;
+  userData: UserType;
+};
 
-function ProtectRoutes( {children, isProtected} : props) {
-
-  /*
-  - check if user is logged in by verifying jwt tokens then populate slices in store
-  - if not logged in redirect to auth page
-  */
-
-  const user : UserLoggedInResponse = useSelector((store : RootState) => store.user);
+function ProtectRoutes({ children, isProtected }: Props) {
+  const user: UserLoggedInResponse = useSelector((store: RootState) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const checkAuthentication = async () => {
-        if (!user.status) {
-            // User status is false, check with backend
-            const res = await IsAuthenticated();
+      setLoading(true);
 
-            if (res?.status === "success") {
-                // Update Redux state if authenticated
-                dispatch(login(res?.user));
-            } else {
-                // If not authenticated, ensure status is set correctly
-                dispatch(logout());
-            }
-        } 
+      const res = await IsAuthenticated();
 
-        console.log("userStatus ::", user.status);
-        
-        
-        console.log('pathName ::', location.pathname);
+      if (res?.status === 'success') {
+        dispatch(login(res?.user));
+      } else {
+        dispatch(logout());
+      }
 
-        if(isProtected){
-            // Handle redirection based on authentication status and current path
-            if (user.status) {
-                if (location.pathname === '/auth') {
-                    navigate('/profile');
-                } else {
-                    setLoading(false);
-                }
-            } 
-            if(!user.status) {
-                if (location.pathname !== '/auth') {
-                    navigate('/auth');
-                } else {
-                    setLoading(false);
-                }
-            }
-        }
+      setAuthChecked(true);
+      setLoading(false);
     };
 
-    if (isProtected) {
-        checkAuthentication();
-    } else {
-        setLoading(false); 
+    checkAuthentication();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (authChecked && isProtected && !user.status && location.pathname !== '/auth') {
+      navigate('/auth');
     }
-}, [user.status,isProtected, navigate, location.pathname, dispatch]);
+  }, [authChecked, user.status, isProtected, navigate, location.pathname]);
 
+  if (isProtected && loading) {
+    return <ContentShimmer />;
+  }
 
-    if (isProtected && loading) {
-        return <ContentShimmer />;
-    }
-
-    return <>{children}</>;
+  return <>{children}</>;
 }
 
-export default ProtectRoutes
+export default ProtectRoutes;
