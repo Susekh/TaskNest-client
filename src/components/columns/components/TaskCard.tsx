@@ -19,7 +19,7 @@ type TaskCardProps = {
   >;
   setColumns: Dispatch<SetStateAction<Column[]>>;
   columns: Column[];
-  setSprint: Dispatch<SetStateAction<Sprint | null>>;
+  setSprint: Dispatch<SetStateAction<Sprint | undefined>>;
 };
 
 const TaskCard = ({

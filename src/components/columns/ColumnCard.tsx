@@ -13,7 +13,7 @@ type Props = {
   columns: Column[];
   setColumns: Dispatch<SetStateAction<Column[]>>;
   projectId: string;
-  setSprint: Dispatch<SetStateAction<Sprint>>;
+  setSprint: Dispatch<SetStateAction<Sprint | undefined>>;
 };
 
 function ColumnComponent({ column, columns, setColumns, projectId, setSprint }: Props) {
@@ -82,7 +82,6 @@ function ColumnComponent({ column, columns, setColumns, projectId, setSprint }: 
             <div key={task.id}>
               <TaskCard
                 taskId={task.id}
-                taskContent={task.content}
                 taskDeadline={task.deadline}
                 taskName={task.name}
                 taskMembers={task.members}

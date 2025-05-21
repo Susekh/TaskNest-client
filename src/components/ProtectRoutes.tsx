@@ -11,21 +11,9 @@ type Props = {
   isProtected: boolean;
 };
 
-type UserType = {
-  id: number;
-  createdAt: Date;
-  username: string;
-  imgUrl?: string;
-  email?: string;
-};
-
-type UserLoggedInResponse = {
-  status: boolean;
-  userData: UserType;
-};
 
 function ProtectRoutes({ children, isProtected }: Props) {
-  const user: UserLoggedInResponse = useSelector((store: RootState) => store.user);
+  const user = useSelector((store: RootState) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();

@@ -20,7 +20,7 @@ type Props = {
   position: number; 
   columnId: string; 
   activeCard: ActiveCard; 
-  role : MemberRole | undefined;
+  role ?: MemberRole;
   columns: Column[]; 
   setColumns: React.Dispatch<React.SetStateAction<Column[]>>; 
 };

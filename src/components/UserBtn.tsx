@@ -8,13 +8,12 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import GetLogOut from "@/auth/GetLogOut";
 import { logout } from "@/store/userSlice";
-import { User as UserType } from "@/types/types";
 
 
 function UserBtn() {
     const res = useSelector((store : RootState) => store.user);
     const userStatus : boolean = res.status;
-    const user : UserType = res.userData;
+    const user = res.userData;
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);

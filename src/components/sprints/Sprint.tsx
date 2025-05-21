@@ -13,7 +13,7 @@ import { RootState } from "@/store/store";
 
 function Sprint() {
   const { sprintId } = useParams();
-  const [sprint, setSprint] = useState<SprintType | null>(null);
+  const [sprint, setSprint] = useState<SprintType | undefined>(undefined);
   const member = useSelector((store: RootState) => store.member.member);
 
   // Fetch the sprint data using the sprintId

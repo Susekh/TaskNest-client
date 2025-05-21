@@ -7,7 +7,6 @@ const ChatBubble = ({
   name,
   time,
   content,
-  role,
   status,
   avatar,
 }: {
@@ -15,7 +14,7 @@ const ChatBubble = ({
   name: string
   time: Date
   content: string
-  role: string | undefined
+  role?: string | undefined
   status?: string
   avatar?: string
 }) => {

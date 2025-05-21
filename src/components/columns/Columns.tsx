@@ -19,14 +19,14 @@ import { RootState } from "@/store/store";
 // Props for the Columns component
 type ColumnsProps = {
   columns: Column[];
-  setSprint: Dispatch<SetStateAction<Sprint | null>>;
+  setSprint: Dispatch<SetStateAction<Sprint | undefined>>;
   projectId: string;
 };
 
 // Props for the ColumnComponent
 type ColumnComponentProps = {
   column: Column;
-  setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>;
+  setSprint: React.Dispatch<React.SetStateAction<Sprint | undefined>>;
   projectId: string;
   setColumns: React.Dispatch<React.SetStateAction<Column[]>>;
   activeCard: { id: string; name: string; index: number } | null;
