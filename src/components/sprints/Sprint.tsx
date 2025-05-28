@@ -1,20 +1,22 @@
 import { useParams } from "react-router-dom";
 import conf from "@/conf/conf";
-import useApiPost from "@/utils/useApiPost";
+import useApiPost from "@/utils/hooks/useApiPost";
 import ContentShimmer from "../loaders/shimmers/ContentShimmer";
 import { useState, useEffect } from "react";
 import callApiPost from "@/utils/callApiPost";
 import Columns from "../columns/Columns";
 import toast from "react-hot-toast";
 import { Calendar, Clock, Layers, Plus, AlertCircle } from "lucide-react";
-import { Sprint as SprintType } from "@/types/types";
+import { SprintStatus, Sprint as SprintType } from "@/types/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+import { Button } from "../ui/button";
 
 function Sprint() {
   const { sprintId } = useParams();
   const [sprint, setSprint] = useState<SprintType | undefined>(undefined);
   const member = useSelector((store: RootState) => store.member.member);
+  const [isColDisabled, setIsColDisabled] = useState(false);
 
   // Fetch the sprint data using the sprintId
   const { data, isLoading, error } = useApiPost(
@@ -29,24 +31,31 @@ function Sprint() {
     }
   }, [data]);
 
-  const createColumn = async () => {
-    try {
-      const res = await callApiPost(
-        `${conf.backendUrl}/create/column/newColumn`,
-        { sprintId, name: "Todo" }
-      );
+  useEffect(() => {
+    setIsColDisabled((sprint?.columns?.length ?? 0) >= 7);
+  }, [sprint]);
 
-      if (res?.status === 201) {
-        setSprint(res.data.sprint);
-        toast.success("Column created successfully");
-      } else {
-        toast.error("Failed to create column");
-        console.error("Failed to create column:", res);
-      }
-    } catch (err) {
-      toast.error("Error creating column");
-      console.error("Error creating column:", err);
-    }
+  const createColumn = async () => {
+    const promise = callApiPost(`${conf.backendUrl}/create/column/newColumn`, {
+      sprintId,
+      name: "Todo",
+    });
+
+    toast.promise(promise, {
+      loading: "Creating column...",
+      success: (res) => {
+        if (res?.status === 201) {
+          setSprint(res.data.sprint);
+          return "Column created successfully";
+        } else {
+          throw new Error("Failed to create column");
+        }
+      },
+      error: (err) => {
+        console.error("Error creating column:", err);
+        return "Error creating column";
+      },
+    });
   };
 
   // Handle loading and error states
@@ -55,8 +64,8 @@ function Sprint() {
   if (error)
     return (
       <div className="flex items-center justify-center h-full w-full p-8">
-        <div className="bg-white dark:bg-neutral-900 border border-red-500/20 rounded-lg p-6 text-center max-w-md shadow-md">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+        <div className="bg-white dark:bg-neutral-900 border border-teal-500/20 rounded-lg p-6 text-center max-w-md shadow-md">
+          <AlertCircle className="h-12 w-12 text-teal-500 mx-auto mb-4" />
           <h2 className="text-xl font-medium text-neutral-800 dark:text-white mb-2">
             Something went wrong
           </h2>
@@ -87,7 +96,7 @@ function Sprint() {
                 <div className="bg-gray-100 dark:bg-neutral-800/50 border border-gray-200 dark:border-neutral-700 rounded-lg px-3 py-2 flex items-center">
                   <Calendar
                     size={16}
-                    className="text-red-600 dark:text-red-500 mr-2"
+                    className="text-teal-600 dark:text-teal-500 mr-2"
                   />
                   <span className="text-sm">
                     {new Date(sprint.startDate).toLocaleDateString()} -{" "}
@@ -98,19 +107,56 @@ function Sprint() {
                 <div className="bg-gray-100 dark:bg-neutral-800/50 border border-gray-200 dark:border-neutral-700 rounded-lg px-3 py-2 flex items-center">
                   <Clock
                     size={16}
-                    className="text-red-600 dark:text-red-500 mr-2"
+                    className="text-teal-600 dark:text-teal-500 mr-2"
                   />
-                  <span
-                    className={`text-sm px-2 py-0.5 rounded ${
-                      sprint.status === "ACTIVE"
-                        ? "bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400"
-                        : sprint.status === "COMPLETED"
-                        ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400"
-                        : "bg-gray-200 dark:bg-neutral-700/50 text-gray-700 dark:text-neutral-300"
-                    }`}
-                  >
-                    {sprint.status}
-                  </span>
+                  {member?.role === "ADMIN" || member?.role === "MODERATOR" ? (
+                    <select
+                      value={sprint.status}
+                      onChange={async (e) => {
+                        const newStatus = e.target.value;
+
+                        try {
+                          const res = await callApiPost(
+                            `${conf.backendUrl}/update/sprint/status`,
+                            { sprintId, newStatus }
+                          );
+
+                          if (res?.status === 200) {
+                            setSprint((prev) =>
+                              prev
+                                ? { ...prev, status: newStatus as SprintStatus }
+                                : prev
+                            );
+                            toast.success(
+                              `Sprint status updated to ${newStatus}`
+                            );
+                          } else {
+                            toast.error("Failed to update sprint status");
+                          }
+                        } catch (err) {
+                          toast.error("Error updating sprint status");
+                          console.error(err);
+                        }
+                      }}
+                      className={`text-sm px-2 py-0.5 rounded border border-gray-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-white`}
+                    >
+                      <option value="PLANNED">PLANNED</option>
+                      <option value="ACTIVE">ACTIVE</option>
+                      <option value="COMPLETED">COMPLETED</option>
+                    </select>
+                  ) : (
+                    <span
+                      className={`text-sm px-2 py-0.5 rounded ${
+                        sprint.status === "ACTIVE"
+                          ? "bg-teal-100 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400"
+                          : sprint.status === "COMPLETED"
+                          ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400"
+                          : "bg-gray-200 dark:bg-neutral-700/50 text-gray-700 dark:text-neutral-300"
+                      }`}
+                    >
+                      {sprint.status}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -131,20 +177,21 @@ function Sprint() {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 <div className="flex items-center mb-4 sm:mb-0">
                   <Layers
-                    className="text-red-600 dark:text-red-500 mr-2"
+                    className="text-teal-600 dark:text-teal-500 mr-2"
                     size={20}
                   />
                   <h2 className="text-xl font-semibold">Sprint Columns</h2>
                 </div>
 
                 {member?.role === "ADMIN" || member?.role === "MODERATOR" ? (
-                  <button
+                  <Button
+                    disabled={isColDisabled}
                     onClick={createColumn}
-                    className="flex items-center justify-center bg-red-600 hover:bg-red-700 transition-colors px-4 py-2 rounded-lg text-white font-medium shadow-sm"
+                    className="flex items-center justify-center bg-teal-600 hover:bg-teal-700 transition-colors px-4 py-2 rounded-lg text-white font-medium shadow-sm"
                   >
                     <Plus size={18} className="mr-2" />
                     Add Column
-                  </button>
+                  </Button>
                 ) : (
                   ""
                 )}

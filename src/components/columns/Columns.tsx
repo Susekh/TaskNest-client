@@ -8,7 +8,7 @@ import {
 import CreateTasksModal from "../modals/create/CreateTasksModal";
 import TaskCard from "./components/TaskCard";
 import DropArea from "./components/DropArea";
-import { Check, Delete, PencilIcon, Plus } from "lucide-react";
+import { Check, Delete, Loader2, PencilIcon, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import conf from "@/conf/conf";
@@ -47,6 +47,7 @@ function ColumnComponent({
 }: ColumnComponentProps) {
   const [colName, setColName] = useState(column.name);
   const [colNameDisabled, setColNameDisabled] = useState(true);
+  const [deletingCol, setDeletingCol] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const member = useSelector((store: RootState) => store.member.member);
 
@@ -74,6 +75,8 @@ function ColumnComponent({
 
   const deleteCol = async (colId: string) => {
     try {
+      setDeletingCol(true);
+      setIsHovering(true);
       const response = await axios.post(
         `${conf.backendUrl}/delete/column/delete-column`,
         { columnId: colId },
@@ -95,6 +98,8 @@ function ColumnComponent({
       console.log("Err at deleting column:", error);
     } finally {
       setColNameDisabled(true);
+      setDeletingCol(false);
+      setIsHovering(false);
     }
   };
 
@@ -151,7 +156,12 @@ function ColumnComponent({
               onClick={() => deleteCol(column.id)}
               className="hover:bg-red-100 dark:hover:bg-red-900/30 transition p-2 rounded-md"
             >
-              <Delete className="w-4 h-4 text-red-600 dark:text-red-500" />
+              {" "}
+              {deletingCol ? (
+                <Loader2 className="animate-spin w-4 h-4" />
+              ) : (
+                <Delete className="w-4 h-4 text-red-600 dark:text-red-500" />
+              )}
             </button>
           )}
       </div>
@@ -212,12 +222,12 @@ function ColumnComponent({
 
       {/* Footer */}
       {member?.role === "ADMIN" || member?.role === "MODERATOR" ? (
-        <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 mt-auto bg-neutral-50/70 dark:bg-neutral-800/90 rounded-b-lg">
-          <p className="text-center text-sm mb-2 text-neutral-600 dark:text-neutral-400 font-medium">
+        <div className=" border-t border-neutral-200 flex items-center justify-center gap-4 dark:border-neutral-700 mt-auto bg-neutral-50/70 dark:bg-neutral-800/90 rounded-b-lg">
+          <p className="text-center text-sm text-neutral-500 dark:text-neutral-400 font-medium">
             Add New Task
           </p>
           <CreateTasksModal
-            className="w-full px-3 py-2 border-2 bg-neutral-800 border-red-200 text-sm rounded-md hover:text-red-500 transition shadow-sm flex items-center justify-center"
+            className="bg-neutral-50 hover:bg-neutral-50 hover:text-teal-400 p-0 border-none dark:bg-neutral-800"
             setColumns={setColumns}
             projectId={projectId}
             columnId={column.id}

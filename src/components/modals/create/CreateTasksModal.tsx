@@ -8,27 +8,28 @@ import {
   DialogTrigger,
   DialogClose,
 } from "../../ui/dialog";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label";
 import { Input } from "../../ui/input";
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import callApiPost from "@/utils/callApiPost";
 import conf from "@/conf/conf";
 import toast from "react-hot-toast";
-import { PlusCircle } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Column, Sprint } from "@/types/types";
 import { AxiosResponse } from "axios";
+import DateTimePicker from "@/components/ui/DateTimePicker";
 
-interface Props  {
+interface Props {
   className: string;
   columnId: string;
   projectId: string;
   setSprint?: Dispatch<SetStateAction<Sprint>>;
   setColumns: Dispatch<SetStateAction<Column[]>>;
   columns?: Column[];
-};
+}
 
 interface ApiNewTaskRes {
-  column : Column;
+  column: Column;
 }
 
 function CreateTasksModal({
@@ -39,14 +40,13 @@ function CreateTasksModal({
 }: Props) {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
-  const [deadline, setDeadline] = useState("");
+  const [deadline, setDeadline] = useState<Date | undefined>();
   const [loading, setLoading] = useState(false);
 
   const createProject = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    
     if (!name || !content || !deadline) {
       toast.error("Please fill out all fields.");
       setLoading(false);
@@ -54,14 +54,16 @@ function CreateTasksModal({
     }
 
     try {
-      const res = await callApiPost(`${conf.backendUrl}/create/task/newTask`, {
-        name,
-        content,
-        deadline,
-        columnId,
-        projectId,
-      }) as AxiosResponse<ApiNewTaskRes> | null;
-      console.log("res from backend ::", res);
+      const res = await callApiPost(
+        `${conf.backendUrl}/create/task/newTask`,
+        {
+          name,
+          content,
+          deadline: deadline.toISOString(), // Convert to ISO string
+          columnId,
+          projectId,
+        }
+      ) as AxiosResponse<ApiNewTaskRes> | null;
 
       if (res?.data?.column) {
         setColumns((prevColumns: Column[]) =>
@@ -74,7 +76,7 @@ function CreateTasksModal({
 
       setName("");
       setContent("");
-      setDeadline("");  // Reset the deadline after task creation
+      setDeadline(undefined);
       toast.success("Task created successfully");
     } catch (error) {
       console.error("Error in creating Task", error);
@@ -86,7 +88,7 @@ function CreateTasksModal({
     <Dialog>
       <DialogTrigger asChild>
         <Button className={className} variant="outline">
-          <PlusCircle/>
+          <Plus />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -123,13 +125,9 @@ function CreateTasksModal({
             <Label htmlFor="deadline" className="text-right">
               End Date
             </Label>
-            <Input
-              id="deadline"
-              type="datetime-local"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              className="col-span-3"
-            />
+            <div className="col-span-3">
+              <DateTimePicker value={deadline} onChange={setDeadline} />
+            </div>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline">

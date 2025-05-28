@@ -91,7 +91,7 @@ function EditProfileForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 text-black dark:text-white">
         <p className=" text-center font-thin">Please fill in the details to get started.</p>
         <FormField
           control={form.control}
@@ -141,7 +141,7 @@ function EditProfileForm() {
           )}
         />
 
-        <Button className="w-full bg-blue-600 text-white hover:bg-blue-800 duration-200 dark:hover:bg-neutral-800 " disabled={isLoading} type="submit">Save</Button>
+        <Button className="w-full bg-teal-600 text-white hover:bg-teal-800 duration-200 dark:hover:bg-teal-800 " disabled={isLoading} type="submit">Save</Button>
   
       </form>
     </Form>

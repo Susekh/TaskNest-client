@@ -4,13 +4,15 @@ import { login, logout } from '@/store/userSlice';
 import { ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 import ContentShimmer from './loaders/shimmers/ContentShimmer';
+import AuthShimmer from './loaders/shimmers/AuthShimmer';
+import ChatShimmer from './loaders/shimmers/ChatShimmer';
 
 type Props = {
   children: ReactNode;
   isProtected: boolean;
 };
-
 
 function ProtectRoutes({ children, isProtected }: Props) {
   const user = useSelector((store: RootState) => store.user);
@@ -45,7 +47,16 @@ function ProtectRoutes({ children, isProtected }: Props) {
     }
   }, [authChecked, user.status, isProtected, navigate, location.pathname]);
 
+
   if (isProtected && loading) {
+    if (location.pathname.startsWith('/conversations')) {
+      return <ChatShimmer />;
+    }
+
+    if (location.pathname === '/auth') {
+      return <AuthShimmer />;
+    }
+
     return <ContentShimmer />;
   }
 

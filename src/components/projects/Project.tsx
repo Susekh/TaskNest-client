@@ -1,5 +1,5 @@
 import conf from "@/conf/conf";
-import useApiPost from "@/utils/useApiPost";
+import useApiPost from "@/utils/hooks/useApiPost";
 import { useNavigate, useParams } from "react-router-dom";
 import ContentShimmer from "../loaders/shimmers/ContentShimmer";
 import { Button } from "../ui/button";
@@ -28,6 +28,23 @@ import {
 import { AxiosResponse } from "axios";
 import { setUserMember } from "@/store/MemberSlice";
 import { Member } from "@/types/types";
+import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 interface ApiDeleteSprintRes {
   message: string;
@@ -78,23 +95,36 @@ function Project() {
   }, [project]);
 
   const deleteSprint = async (id: string) => {
-    try {
-      const res = (await callApiPost(
-        `${conf.backendUrl}/delete/sprint/delete-sprints`,
-        { sprintId: id }
-      )) as AxiosResponse<ApiDeleteSprintRes> | null;
+  const promise = callApiPost(
+    `${conf.backendUrl}/delete/sprint/delete-sprints`,
+    { sprintId: id }
+  ) as Promise<AxiosResponse<ApiDeleteSprintRes> | null>;
 
-      if (res && res.data && res.data.message) {
-        toast.success(res.data.message);
+  toast.promise(
+    promise.then((res) => {
+      if (res?.data?.message) {
         setSprints((prev) => prev.filter((sprint) => sprint.id !== id));
+        return res.data.message;
       } else {
-        toast.error("Unexpected response structure");
+        return "Sprint deleted, but no confirmation message.";
       }
-    } catch (error) {
-      toast.error("Couldn't delete sprint");
-      console.error("Error in deleting sprint ::", error);
+    }),
+    {
+      loading: "Deleting sprint...",
+      success: (message) => message,
+      error: "Couldn't delete sprint",
+    },
+    {
+      success: {
+        duration: 3000,
+      },
+      error: {
+        duration: 4000,
+      },
     }
-  };
+  );
+};
+
 
   const copyInviteLinkToClipboard = (inviteCode: string) => {
     navigator.clipboard
@@ -128,16 +158,20 @@ function Project() {
       const end = parseISO(endDate);
 
       if (isBefore(today, start)) {
-        return "bg-neutral-700 text-neutral-100";
+        // Upcoming sprint (not started yet)
+        return "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200";
       } else if (isAfter(today, start) && isBefore(today, end)) {
-        return "bg-red-600 text-white";
+        // Ongoing sprint
+        return "bg-teal-600 text-white dark:bg-teal-400 dark:text-teal-900";
       } else if (isAfter(today, end)) {
-        return "bg-black text-red-400";
+        // Finished sprint (past deadline)
+        return "bg-red-600 text-white dark:bg-red-500 dark:text-red-200";
       }
-      return "bg-red-800 text-white";
+      // fallback/default
+      return "bg-gray-500 text-white dark:bg-gray-600 dark:text-gray-300";
     } catch (e) {
       console.error("Err in setting sprint color ::", e);
-      return "bg-red-800 text-white";
+      return "bg-gray-500 text-white dark:bg-gray-600 dark:text-gray-300";
     }
   };
 
@@ -208,7 +242,9 @@ function Project() {
   if (error)
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-red-500 dark:text-red-400 text-lg">Error: {error}</p>
+        <p className="text-teal-500 dark:text-teal-400 text-lg">
+          Error: {error}
+        </p>
       </div>
     );
 
@@ -225,8 +261,8 @@ function Project() {
     <section className="bg-neutral-100 dark:bg-black text-neutral-800 dark:text-neutral-200 p-4 md:p-6 md:pb-52 lg:p-8 lg:pb-60">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row items-start md:items-center mb-8 pb-6 border-b border-neutral-200 dark:border-neutral-800">
-          <div className="flex items-center gap-4 mb-4 md:mb-0">
-            <div className="w-12 h-12 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center overflow-hidden ring-2 ring-red-600 dark:ring-red-700">
+          <div className="flex items-center gap-4 w-full mb-4 md:mb-0">
+            <div className="w-12 h-12 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center overflow-hidden ring-2 ring-teal-600 dark:ring-teal-700">
               {project.imageUrl ? (
                 <img
                   className="w-full h-full object-cover"
@@ -236,17 +272,25 @@ function Project() {
               ) : (
                 <FolderOpen
                   size={24}
-                  className="text-red-600 dark:text-red-500"
+                  className="text-teal-600 dark:text-teal-500"
                 />
               )}
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-red-600 dark:text-red-500">
+            <div className="flex justify-between w-full mr-4">
+              <h1 className="text-2xl font-bold text-teal-600 dark:text-teal-500">
                 {project.name}
               </h1>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                ID: {project.id}
-              </p>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-2 text-xs">
+                <span className="px-2 py-0.5 min-w-[6rem] text-center rounded flex items-center justify-center font-medium bg-gray-300 dark:bg-gray-700 text-black dark:text-white">
+                  Upcoming
+                </span>
+                <span className="px-2 py-0.5 min-w-[6rem] text-center rounded flex items-center justify-center font-medium bg-teal-600 dark:bg-teal-400 text-white dark:text-black">
+                  Active
+                </span>
+                <span className="px-2 py-0.5 min-w-[6rem] text-center rounded flex items-center justify-center font-medium bg-red-600 dark:bg-red-400 text-white dark:text-black">
+                  Past Deadline
+                </span>
+              </div>
             </div>
           </div>
           {member?.role === "CONTRIBUTER" ? (
@@ -255,7 +299,7 @@ function Project() {
             <div className="ml-auto flex gap-2">
               <Button
                 onClick={() => copyInviteLinkToClipboard(project.inviteCode)}
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white dark:bg-red-700 dark:hover:bg-red-800 transition-colors shadow-md"
+                className="flex items-center gap-2 bg-neutral-600 hover:bg-neutral-700 text-white dark:bg-neutral-700 dark:hover:bg-neutral-800 transition-colors shadow-md"
               >
                 <Link size={16} />
                 Invite Members
@@ -271,14 +315,14 @@ function Project() {
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 border border-neutral-200 dark:border-neutral-800">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold flex items-center text-red-600 dark:text-red-500">
+                <h2 className="text-xl font-semibold flex items-center text-teal-600 dark:text-teal-500">
                   <Users size={20} className="mr-2" />
                   Team Members
                 </h2>
                 <Button
                   onClick={toggleMembersList}
                   variant="outline"
-                  className="text-sm border border-red-200 dark:border-red-700 text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 bg-white dark:bg-neutral-900"
+                  className="text-sm border border-teal-200 dark:border-teal-700 text-teal-600 dark:text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 bg-white dark:bg-neutral-900"
                 >
                   {showMembers ? "Hide" : "Show"} All
                 </Button>
@@ -301,7 +345,7 @@ function Project() {
                             }&background=B91C1C&color=ffffff`
                           }
                           alt={m.user?.name || "User"}
-                          className="w-10 h-10 rounded-full object-cover border-2 border-red-500 dark:border-red-700"
+                          className="w-10 h-10 rounded-full object-cover border-2 border-teal-500 dark:border-teal-700"
                         />
                         <div>
                           <h3 className="font-medium">
@@ -318,7 +362,7 @@ function Project() {
                               <DropdownMenuTrigger asChild>
                                 <Button
                                   variant="ghost"
-                                  className="flex items-center gap-1 text-sm px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100 hover:bg-red-200 dark:hover:bg-red-800"
+                                  className="flex items-center gap-1 text-sm px-2 py-1 bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-100 hover:bg-teal-200 dark:hover:bg-teal-800"
                                   onClick={(e) => e.stopPropagation()}
                                 >
                                   {m.role || "Member"}
@@ -331,6 +375,11 @@ function Project() {
                               >
                                 {m.role !== "ADMIN" && (
                                   <DropdownMenuItem
+                                    className={cn(
+                                      m.id === member.id
+                                        ? "hidden"
+                                        : "opacity-1"
+                                    )}
                                     onClick={() =>
                                       handleChangeRole(m.id, "ADMIN")
                                     }
@@ -341,6 +390,11 @@ function Project() {
                                 )}
                                 {m.role !== "MODERATOR" && (
                                   <DropdownMenuItem
+                                    className={cn(
+                                      m.id === member.id
+                                        ? "hidden"
+                                        : "opacity-1"
+                                    )}
                                     onClick={() =>
                                       handleChangeRole(m.id, "MODERATOR")
                                     }
@@ -351,6 +405,11 @@ function Project() {
                                 )}
                                 {m.role !== "CONTRIBUTER" && (
                                   <DropdownMenuItem
+                                    className={cn(
+                                      m.id === member.id
+                                        ? "hidden"
+                                        : "opacity-1"
+                                    )}
                                     onClick={() =>
                                       handleChangeRole(m.id, "CONTRIBUTER")
                                     }
@@ -361,15 +420,17 @@ function Project() {
                                 )}
                                 <DropdownMenuItem
                                   onClick={() => handleRemoveMember(m.id)}
-                                  className="text-red-600 focus:bg-red-100 dark:focus:bg-red-900"
+                                  className="text-teal-600 focus:bg-teal-100 dark:focus:bg-teal-900"
                                 >
                                   <Trash2 className="w-4 h-4 mr-2" />
-                                  Remove Member
+                                  {m.id === member.id
+                                    ? "leave the project"
+                                    : "Remove Member"}
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           ) : (
-                            <div className="flex items-center gap-1 text-sm px-2 py-2 rounded-lg bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100">
+                            <div className="flex items-center gap-1 text-sm px-2 py-2 rounded-lg bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-100">
                               {m.role || "Member"}
                             </div>
                           )}
@@ -381,7 +442,7 @@ function Project() {
                       <p className="text-neutral-500 dark:text-neutral-400 mb-3">
                         No team members yet
                       </p>
-                      <Button className="bg-red-600 hover:bg-red-700 text-white dark:bg-red-700 dark:hover:bg-red-800">
+                      <Button className="bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-700 dark:hover:bg-teal-800">
                         Add Members
                       </Button>
                     </div>
@@ -402,11 +463,11 @@ function Project() {
                       }
                       alt={member.user?.name || "User"}
                       title={member.user?.name || "User"}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-red-500 dark:border-red-700"
+                      className="w-8 h-8 rounded-full object-cover border-2 border-teal-500 dark:border-teal-700"
                     />
                   ))}
                   {members.length > 5 && (
-                    <div className="w-8 h-8 rounded-full bg-red-600 dark:bg-red-700 flex items-center justify-center text-xs font-medium text-white">
+                    <div className="w-8 h-8 rounded-full bg-teal-600 dark:bg-teal-700 flex items-center justify-center text-xs font-medium text-white">
                       +{members.length - 5}
                     </div>
                   )}
@@ -418,16 +479,32 @@ function Project() {
           <div className="lg:col-span-2">
             <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 border border-neutral-200 dark:border-neutral-800">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-red-600 dark:text-red-500">
+                <h2 className="text-xl font-semibold text-teal-600 dark:text-teal-500">
                   Sprints
                 </h2>
                 {member?.role === "CONTRIBUTER" ? (
                   ""
                 ) : (
-                  <CreateSprintModal
-                    className="bg-red-600 hover:bg-red-700 text-white dark:bg-red-700 dark:hover:bg-red-800 shadow-md"
-                    projectId={project.id}
-                  />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <CreateSprintModal
+                            disabled={sprints.length >= 5}
+                            className="bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-700 dark:hover:bg-teal-800 shadow-md"
+                            projectId={project.id}
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      {sprints.length >= 5 && (
+                        <TooltipContent side="top">
+                          <p className="text-xs">
+                            Premium required to create more than 5 sprints.
+                          </p>
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </div>
 
@@ -436,44 +513,72 @@ function Project() {
                   {sprints.map((sprint) => (
                     <div
                       key={sprint.id}
-                      className="bg-neutral-50 dark:bg-neutral-800 rounded-lg overflow-hidden shadow-sm border-l-4 border-red-500 dark:border-red-700"
+                      className="relative bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-neutral-200 dark:border-neutral-700 overflow-hidden transition hover:shadow-lg"
                     >
+                      {/* Status Badge */}
                       <div
-                        className="p-4 cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
-                        onClick={() => navigate(`sprints/${sprint.id}`)}
+                        className={`absolute top-3 right-3 text-xs px-2 py-0.5 rounded-full font-semibold ${getSprintStatusColor(
+                          sprint.startDate,
+                          sprint.endDate
+                        )}`}
                       >
-                        <div className="flex justify-between mb-2">
-                          <h3 className="font-semibold text-lg">
-                            {sprint.name}
-                          </h3>
-                        </div>
-
-                        <div
-                          className={`text-sm font-medium py-2 px-3 rounded-full ${getSprintStatusColor(
-                            sprint.startDate,
-                            sprint.endDate
-                          )}`}
-                        >
-                          {sprint.status}
-                        </div>
+                        {sprint.status}
                       </div>
 
-                      <div className="border-t p-2 flex justify-between border-neutral-200 dark:border-neutral-700">
-                        {member?.role === "CONTRIBUTER" ? (
-                          ""
-                        ) : (
-                          <Button
-                            className="bg-neutral-800 hover:bg-neutral-900 text-white text-sm py-2 hover:text-red-600"
-                            onClick={() => deleteSprint(sprint.id)}
-                          >
-                            <Trash2 />
-                          </Button>
-                        )}
-
+                      {/* Main Content */}
+                      <div
+                        className="p-4 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+                        onClick={() => navigate(`sprints/${sprint.id}`)}
+                      >
+                        <h3 className="font-semibold text-lg text-neutral-800 dark:text-white mb-1">
+                          {sprint.name}
+                        </h3>
                         <p className="text-sm text-neutral-500 dark:text-neutral-400">
                           {formatDate(sprint.startDate)} -{" "}
                           {formatDate(sprint.endDate)}
                         </p>
+                      </div>
+
+                      {/* Footer */}
+                      <div className="border-t border-neutral-200 dark:border-neutral-700 px-4 py-2 flex items-center justify-between">
+                        {member?.role !== "CONTRIBUTER" ? (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="text-sm hover:text-red-600 dark:hover:text-red-500"
+                              >
+                                <Trash2 size={16} />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Are you sure?
+                                </AlertDialogTitle>
+                              </AlertDialogHeader>
+                              <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                                This action cannot be undone. Do you really want
+                                to delete this sprint?
+                              </div>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => deleteSprint(sprint.id)}
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        ) : (
+                          <div />
+                        )}
+
+                        <span className="text-xs text-neutral-400 dark:text-neutral-500">
+                          #{sprint.id.slice(0, 6)}
+                        </span>
                       </div>
                     </div>
                   ))}

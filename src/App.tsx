@@ -1,17 +1,14 @@
 import { Outlet } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import Footer from "./components/Footer"
-import { useState } from "react"
 import { Toaster } from 'react-hot-toast';
 
 
 function App() {
 
-  const [isDark, setIsDark] = useState(true);
-
   return (
-    <div className={`${isDark ? "dark" : " "} flex flex-col` }>
-      <Navbar isDark={isDark} setIsDark={setIsDark} />
+    <div className={`flex flex-col` }>
+      <Navbar />
         <main>
           <Outlet/>
           <Toaster/>

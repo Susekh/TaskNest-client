@@ -1,98 +1,97 @@
-
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Home from './pages/Home.tsx'
-import ContentPage from './pages/ContentPage.tsx'
-import Auth from './pages/Auth.tsx'
-import ProtectRoutes from './components/ProtectRoutes.tsx'
-import { Provider } from 'react-redux'
-import store from './store/store.ts'
-import HandleGithubOauth from './components/HandleGithubOauth.tsx'
-import HandleGoogleOauth from './components/HandleGoogleOauth.tsx'
-import ContentShimmer from './components/loaders/shimmers/ContentShimmer.tsx'
-import Profile from './pages/Profile.tsx'
-import ForgotPassword from './pages/ForgotPassword.tsx'
-import ResetPassword from './pages/ResetPassword.tsx'
-import EditProfile from './pages/EditProfile.tsx'
-import Dashboard from './pages/Dashboard.tsx'
-import Project from './components/projects/Project.tsx'
-import Sprint from './components/sprints/Sprint.tsx'
-import ErrorPage from './pages/ErrorPage.tsx'
-import TaskPage from './pages/TaskPage.tsx'
-import InviteToProject from './pages/InviteToProject.tsx'
-import Conversations from './pages/Conversations.tsx'
-
+import { createRoot } from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./pages/Home.tsx";
+import ContentPage from "./pages/ContentPage.tsx";
+import Auth from "./pages/Auth.tsx";
+import ProtectRoutes from "./components/ProtectRoutes.tsx";
+import { Provider } from "react-redux";
+import store from "./store/store.ts";
+import HandleGithubOauth from "./components/HandleGithubOauth.tsx";
+import HandleGoogleOauth from "./components/HandleGoogleOauth.tsx";
+import ContentShimmer from "./components/loaders/shimmers/ContentShimmer.tsx";
+import Profile from "./pages/Profile.tsx";
+import ForgotPassword from "./pages/ForgotPassword.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
+import EditProfile from "./pages/EditProfile.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
+import Project from "./components/projects/Project.tsx";
+import Sprint from "./components/sprints/Sprint.tsx";
+import ErrorPage from "./pages/ErrorPage.tsx";
+import TaskPage from "./pages/TaskPage.tsx";
+import InviteToProject from "./pages/InviteToProject.tsx";
+import Conversations from "./pages/Conversations.tsx";
+import { ThemeProvider } from "./components/ui/ThemeProvider.tsx";
 
 const router = createBrowserRouter([
   {
-    path : '/',
-    element : <App />,
-    errorElement : <ErrorPage/>,
-    children : [
+    path: "/",
+    element: <App />,
+    errorElement: <ErrorPage />,
+    children: [
       {
-        path: '*',
+        path: "*",
         element: <ErrorPage />,
       },
       {
-        index : true,
-        element : (
-        <ProtectRoutes isProtected={false}>
-          <Home />
-        </ProtectRoutes>
-      )
+        index: true,
+        element: (
+          <ProtectRoutes isProtected={false}>
+            <Home />
+          </ProtectRoutes>
+        ),
       },
       {
-        path : '/auth',
-        element : (
+        path: "/auth",
+        element: (
           <ProtectRoutes isProtected={true}>
             <Auth />
           </ProtectRoutes>
-        )
+        ),
       },
       {
-        path : '/dashboard',
-        element : (
+        path: "/dashboard",
+        element: (
           <ProtectRoutes isProtected={true}>
-            <Dashboard/>
+            <Dashboard />
           </ProtectRoutes>
-        )
+        ),
       },
       {
-        path : '/auth/forgot-password',
-        element : <ForgotPassword/>
+        path: "/auth/forgot-password",
+        element: <ForgotPassword />,
       },
       {
-        path : '/auth/reset-password/:token',
-        element : <ResetPassword/>
+        path: "/auth/reset-password/:token",
+        element: <ResetPassword />,
       },
       {
-        path : '/shop',
-        element : (
-        <ProtectRoutes isProtected={true}>
-          <ContentShimmer/>
-        </ProtectRoutes>
-        )
-      },
-      {
-        path : '/profile',
-        element : (
+        path: "/shop",
+        element: (
           <ProtectRoutes isProtected={true}>
-            <Profile/>
+            <ContentShimmer />
           </ProtectRoutes>
-        )
+        ),
       },
       {
-        path : '/profile/edit',
-        element : (
-          <ProtectRoutes isProtected={true} >
-            <EditProfile/>
+        path: "/profile",
+        element: (
+          <ProtectRoutes isProtected={true}>
+            <Profile />
           </ProtectRoutes>
-        )
+        ),
       },
       {
-        path: '/projects/:projectId',
+        path: "/profile/edit",
+        element: (
+          <ProtectRoutes isProtected={true}>
+            <EditProfile />
+          </ProtectRoutes>
+        ),
+      },
+      {
+        path: "/projects/:projectId",
         element: (
           <ProtectRoutes isProtected={true}>
             <Project />
@@ -100,15 +99,15 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path : '/projects/:projectId/invite/:inviteCode',
-        element : (
-          <ProtectRoutes isProtected={true} >
+        path: "/projects/:projectId/invite/:inviteCode",
+        element: (
+          <ProtectRoutes isProtected={true}>
             <InviteToProject />
           </ProtectRoutes>
-        )
+        ),
       },
       {
-        path: '/projects/:projectId/sprints/:sprintId',
+        path: "/projects/:projectId/sprints/:sprintId",
         element: (
           <ProtectRoutes isProtected={true}>
             <Sprint />
@@ -116,7 +115,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/projects/:projectId/sprints/:sprintId/task/:taskId',
+        path: "/projects/:projectId/sprints/:sprintId/task/:taskId",
         element: (
           <ProtectRoutes isProtected={true}>
             <TaskPage />
@@ -124,42 +123,44 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'auth/oauth',
-        children : [
+        path: "auth/oauth",
+        children: [
           {
-            path: 'github',
-            element : (<HandleGithubOauth/>)
+            path: "github",
+            element: <HandleGithubOauth />,
           },
           {
-            path : 'google',
-            element : <HandleGoogleOauth/>
+            path: "google",
+            element: <HandleGoogleOauth />,
           },
-        ]
+        ],
       },
       {
-        path : '/content',
-        element : (
+        path: "/content",
+        element: (
           <ProtectRoutes isProtected={true}>
             <ContentPage />
           </ProtectRoutes>
-        )
+        ),
       },
       {
-        path : '/conversations/:roomId',
-        element : (
+        path: "/conversations/:roomId",
+        element: (
           <ProtectRoutes isProtected={true}>
-            <Conversations/>
+            <Conversations />
           </ProtectRoutes>
-        )
-      }
-    ]
-  }
-])
+        ),
+      },
+    ],
+  },
+]);
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <>
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+    <ThemeProvider>
+      <Provider store={store}>
+        <RouterProvider router={router} />
+      </Provider>
+    </ThemeProvider>
   </>
-)
+);

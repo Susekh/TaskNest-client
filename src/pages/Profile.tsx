@@ -90,7 +90,7 @@ function Profile() {
       const updatedUser = {
         ...user,
         imgUrl: uploadedImageUrl,
-        email: user.email ?? "", // fallback if email might be optional
+        email: user.email ?? "", 
       };
 
       dispatch(login(updatedUser));
@@ -106,7 +106,7 @@ function Profile() {
   return (
     <div className="w-full min-h-screen bg-neutral-50 dark:bg-neutral-900 flex flex-col">
       {/* Header background */}
-      <div className="w-full h-32 md:h-40 bg-gradient-to-r from-red-500 to-purple-600"></div>
+      <div className="w-full h-32 md:h-40 bg-gradient-to-r from-teal-500 to-emerald-200"></div>
 
       {/* Main content */}
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 md:-mt-20 mb-8 flex flex-col md:flex-row gap-6">
@@ -147,7 +147,7 @@ function Profile() {
             </p>
             <button
               onClick={() => navigate("/profile/edit")}
-              className="w-full flex items-center justify-center gap-1 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300 dark:bg-blue-500 dark:hover:bg-blue-600 font-medium"
+              className="w-full flex items-center justify-center gap-1 py-2 text-sm bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors duration-300 dark:bg-blue-500 dark:hover:bg-blue-600 font-medium"
             >
               <Edit className="w-3 h-3" />
               Edit Profile

@@ -1,3 +1,4 @@
+import { Sprint, User } from "@/types/types";
 import axios from "axios";
 
 type ApiPostType = {
@@ -11,8 +12,8 @@ type ApiPostType = {
     msg: string;
   };
   projectId?: string;
-  user?: any;
-  sprint?: any;
+  user?: User;
+  sprint?: Sprint;
 };
 
 const callApiPost = async (url: string, body: any) => {

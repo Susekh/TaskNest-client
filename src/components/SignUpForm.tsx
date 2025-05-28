@@ -191,7 +191,7 @@ function SignUpForm({setIsSignIn} : props) {
           )}
         />
 
-        <Button className="w-full bg-gray-800 text-white dark:hover:bg-neutral-800 " disabled={isLoading} type="submit">Sign Up</Button>
+        <Button className="w-full bg-teal-800 text-white dark:hover:bg-teal-900 " disabled={isLoading} type="submit">Sign Up</Button>
         <div className="flex gap-2 justify-center font-light text-sm border-t-2 border-gray-300 p-4">
           <p>Already have an account?</p>
           <button type="button" className="font-semibold text-gray-500 hover:underline" onClick={() => setIsSignIn(true)}>Sign in</button>
