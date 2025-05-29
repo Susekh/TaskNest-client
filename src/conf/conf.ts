@@ -1,6 +1,6 @@
 
 const conf = {
-    frontendUrl : 'http://localhost:5173',
+    frontendUrl : String(import.meta.env.VITE_FRONTEND_URL),
     backendUrl : String(import.meta.env.VITE_BACKEND_URL),
     clientIdGithub : String(import.meta.env.VITE_CLIENT_ID),
     clientIdGoogle : String(import.meta.env.VITE_CLIENT_ID_GOOGLE),
