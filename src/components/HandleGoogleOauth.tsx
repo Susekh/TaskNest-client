@@ -37,10 +37,7 @@ function HandleGoogleOauth() {
             navigate('/auth');
           }
         };
-    
         handleGoogleAuth();
-
-
     }, [navigate]);
 
   return (
