@@ -45,6 +45,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
+import { BiExit } from "react-icons/bi";
 
 interface ApiDeleteSprintRes {
   message: string;
@@ -95,36 +96,35 @@ function Project() {
   }, [project]);
 
   const deleteSprint = async (id: string) => {
-  const promise = callApiPost(
-    `${conf.backendUrl}/delete/sprint/delete-sprints`,
-    { sprintId: id }
-  ) as Promise<AxiosResponse<ApiDeleteSprintRes> | null>;
+    const promise = callApiPost(
+      `${conf.backendUrl}/delete/sprint/delete-sprints`,
+      { sprintId: id }
+    ) as Promise<AxiosResponse<ApiDeleteSprintRes> | null>;
 
-  toast.promise(
-    promise.then((res) => {
-      if (res?.data?.message) {
-        setSprints((prev) => prev.filter((sprint) => sprint.id !== id));
-        return res.data.message;
-      } else {
-        return "Sprint deleted, but no confirmation message.";
+    toast.promise(
+      promise.then((res) => {
+        if (res?.data?.message) {
+          setSprints((prev) => prev.filter((sprint) => sprint.id !== id));
+          return res.data.message;
+        } else {
+          return "Sprint deleted, but no confirmation message.";
+        }
+      }),
+      {
+        loading: "Deleting sprint...",
+        success: (message) => message,
+        error: "Couldn't delete sprint",
+      },
+      {
+        success: {
+          duration: 3000,
+        },
+        error: {
+          duration: 4000,
+        },
       }
-    }),
-    {
-      loading: "Deleting sprint...",
-      success: (message) => message,
-      error: "Couldn't delete sprint",
-    },
-    {
-      success: {
-        duration: 3000,
-      },
-      error: {
-        duration: 4000,
-      },
-    }
-  );
-};
-
+    );
+  };
 
   const copyInviteLinkToClipboard = (inviteCode: string) => {
     navigator.clipboard
@@ -276,37 +276,61 @@ function Project() {
                 />
               )}
             </div>
-            <div className="flex justify-between w-full mr-4">
-              <h1 className="text-2xl font-bold text-teal-600 dark:text-teal-500">
+            <div className="flex  items-center w-full mr-4">
+              <h1 className="text-2xl font-extrabold text-gray-600 dark:text-gray-400 truncate max-w-[60%]">
                 {project.name}
               </h1>
-              <div className="flex flex-col sm:flex-row flex-wrap gap-2 text-xs">
-                <span className="px-2 py-0.5 min-w-[6rem] text-center rounded flex items-center justify-center font-medium bg-gray-300 dark:bg-gray-700 text-black dark:text-white">
+              <div className="flex flex-wrap mx-auto gap-2 text-xs font-semibold">
+                <span className="px-2.5 py-0.5 min-w-[5.5rem] text-center rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm">
                   Upcoming
                 </span>
-                <span className="px-2 py-0.5 min-w-[6rem] text-center rounded flex items-center justify-center font-medium bg-teal-600 dark:bg-teal-400 text-white dark:text-black">
+                <span className="px-2.5 py-0.5 min-w-[5.5rem] text-center rounded-full bg-teal-600 dark:bg-teal-700 text-white shadow-md">
                   Active
                 </span>
-                <span className="px-2 py-0.5 min-w-[6rem] text-center rounded flex items-center justify-center font-medium bg-red-600 dark:bg-red-400 text-white dark:text-black">
+                <span className="px-2.5 py-0.5 min-w-[5.5rem] text-center rounded-full bg-red-600 dark:bg-red-700 text-white dark:text-neutral-300 shadow-md">
                   Past Deadline
                 </span>
               </div>
             </div>
           </div>
-          {member?.role === "CONTRIBUTER" ? (
-            ""
-          ) : (
-            <div className="ml-auto flex gap-2">
+
+          {member?.role !== "CONTRIBUTER" && (
+            <div className="ml-auto flex tems-center gap-3">
+              {/* Invite Button */}
               <Button
                 onClick={() => copyInviteLinkToClipboard(project.inviteCode)}
-                className="flex items-center gap-2 bg-neutral-600 hover:bg-neutral-700 text-white dark:bg-neutral-700 dark:hover:bg-neutral-800 transition-colors shadow-md"
+                className="flex items-center gap-1.5 px-3 py-1 bg-gray-800 text-white rounded-md shadow hover:shadow-md hover:bg-gray-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                aria-label="Copy invite link"
               >
-                <Link size={16} />
-                Invite Members
+                <Link size={14} className="text-indigo-400" />
+                <span className="font-medium text-sm select-none">Invite</span>
               </Button>
-              <Button onClick={() => {}} className="bg-none p-0">
+
+              {/* Upgrade Button */}
+              {!project.isPro && (
+                <Button
+                  onClick={() => navigate(`/upgrade/${projectId}`)}
+                  className="px-3.5 py-1 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 text-white rounded-md shadow hover:brightness-110 transition duration-200 font-medium text-sm select-none focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  aria-label="Upgrade to Pro"
+                >
+                  Upgrade
+                </Button>
+              )}
+
+              {/* Divider */}
+              <div
+                className="border-l border-gray-600 h-6 mx-2"
+                aria-hidden="true"
+              />
+
+              {/* Delete Button */}
+              <button
+                onClick={() => {}}
+                aria-label="Delete Project"
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-800 text-red-500 hover:bg-red-600 hover:text-white shadow-sm hover:shadow-md transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-400"
+              >
                 <DeleteProjectModal projectId={projectId} />
-              </Button>
+              </button>
             </div>
           )}
         </div>
@@ -315,14 +339,14 @@ function Project() {
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 border border-neutral-200 dark:border-neutral-800">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold flex items-center text-teal-600 dark:text-teal-500">
+                <h2 className="text-xl font-semibold flex items-center text-neutral-600 dark:text-neutral-500">
                   <Users size={20} className="mr-2" />
                   Team Members
                 </h2>
                 <Button
                   onClick={toggleMembersList}
                   variant="outline"
-                  className="text-sm border border-teal-200 dark:border-teal-700 text-teal-600 dark:text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 bg-white dark:bg-neutral-900"
+                  className="text-sm border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-500 hover:bg-neutral-50 dark:hover:bg-neutral-950 bg-white dark:bg-neutral-900"
                 >
                   {showMembers ? "Hide" : "Show"} All
                 </Button>
@@ -420,12 +444,19 @@ function Project() {
                                 )}
                                 <DropdownMenuItem
                                   onClick={() => handleRemoveMember(m.id)}
-                                  className="text-teal-600 focus:bg-teal-100 dark:focus:bg-teal-900"
+                                  className="text-red-600 focus:bg-teal-100 dark:focus:bg-red-900"
                                 >
-                                  <Trash2 className="w-4 h-4 mr-2" />
-                                  {m.id === member.id
-                                    ? "leave the project"
-                                    : "Remove Member"}
+                                  {m.id === member.id ? (
+                                    <span className="flex items-center text-red-500">
+                                      <BiExit className="w-4 h-4 mr-2" />
+                                      Leave the project
+                                    </span>
+                                  ) : (
+                                    <span className="flex items-center text-red-500">
+                                      <Trash2 className="w-4 h-4 mr-2" />
+                                      Remove Member
+                                    </span>
+                                  )}
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -479,7 +510,7 @@ function Project() {
           <div className="lg:col-span-2">
             <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 border border-neutral-200 dark:border-neutral-800">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-teal-600 dark:text-teal-500">
+                <h2 className="text-xl font-semibold text-neutral-600 dark:text-neutral-400">
                   Sprints
                 </h2>
                 {member?.role === "CONTRIBUTER" ? (

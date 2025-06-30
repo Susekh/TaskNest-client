@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import conf from "@/conf/conf";
 import useApiPost from "@/utils/hooks/useApiPost";
 import ContentShimmer from "../loaders/shimmers/ContentShimmer";
@@ -15,8 +15,13 @@ import { Button } from "../ui/button";
 function Sprint() {
   const { sprintId } = useParams();
   const [sprint, setSprint] = useState<SprintType | undefined>(undefined);
-  const member = useSelector((store: RootState) => store.member.member);
   const [isColDisabled, setIsColDisabled] = useState(false);
+  const navigate = useNavigate();
+  const member = useSelector((store: RootState) => store.member.member);
+  
+  if(!member) {
+    navigate(-1);
+  }
 
   // Fetch the sprint data using the sprintId
   const { data, isLoading, error } = useApiPost(
