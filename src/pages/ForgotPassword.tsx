@@ -6,71 +6,101 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 function ForgotPassword() {
-    const [emailInput, setEmailInput] = useState('');
-    const [isLoading, setIsLaoding] = useState(false);
-    const [isEmailSent, setIsEmailSent] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useState(false);
 
-    async function handleSubmit(e : FormEvent) {
-        e.preventDefault();
-        setIsLaoding(true);
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setIsLoading(true);
 
-        try {
-            const res = await axios.post(`${conf.backendUrl}/auth/forgot-password`, 
-                {
-                    email : emailInput
-                },
-                {
-                    withCredentials : true,
-                    headers : {"Content-Type" : "application/json"},
-                }
-            )
-    
-            const data = res.data;
-    
-            console.log("Res in Forgot Password", data);
-            toast.success(res.data.message);
-            setIsEmailSent(true)
-            console.log('working form ::', emailInput);
-        } catch (error) {
-            if(error instanceof AxiosError) {
-                console.log("Err at Forgot Password ::", error);
-                toast.error(error?.response?.data.message)   
-            }
-            
-        } finally {
-            setIsLaoding(false);
+    try {
+      const res = await axios.post(
+        `${conf.backendUrl}/auth/forgot-password`,
+        { email: emailInput },
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "application/json" },
         }
+      );
+
+      toast.success(res.data.message);
+      setIsEmailSent(true);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.message || "Something went wrong.");
+      } else {
+        toast.error("Server error. Please try again.");
+      }
+    } finally {
+      setIsLoading(false);
     }
+  }
 
   return (
-    <>
-    <div className="flex items-center justify-center p-12 dark:bg-neutral-800 dark:text-white">
-        <div className="">
-            <h2 className="mb-4 text-center text-2xl font-bold dark:text-white">Forgot Password</h2>
-            <form className="flex flex-col gap-4 border-2 border-neutral-400 p-8 rounded-md" onSubmit={(e) => handleSubmit(e)}>
-                <p className=" ">Enter the Information below to recover the password</p>
-                {
-                    !isEmailSent ? 
-                    (<>
-                        <label className="font-semibold" htmlFor="email" >Email</label>
-                        <input required={true} id="email" onChange={(e) => setEmailInput(e.target.value)} type="email" value={emailInput} className="border-2 rounded-md p-1" placeholder="Email"/>
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4 dark:bg-neutral-900">
+      <div className="w-full max-w-md p-8 bg-white dark:bg-neutral-800 rounded-lg shadow-md border">
+        <h2 className="text-2xl font-bold text-center mb-6 dark:text-white">
+          Forgot Password
+        </h2>
 
-                        <Button disabled={isLoading ? true : false} className="bg-blue-600 hover:bg-blue-700 duration-300" type="submit"> Recover </Button>
-                    </>)
-                    :
-                    (
-                        <div className="text-center">
-                            <p className="font-semibold mb-2">Check your email for further steps.</p>
-                            <span onClick={() => setIsEmailSent(false)} className="underline text-blue-600 hover:text-blue-800 duration-100 hover:cursor-pointer">Didn't receive Email?</span>
-                        </div>
-                    )
-                }
-                <Link to={'/auth'} className="text-center text-sm hover:underline text-blue-600 hover:text-blue-800 duration-150">Login Page</Link>
-            </form>
+        {!isEmailSent ? (
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <p className="text-sm text-muted-foreground">
+              Enter your email to receive password reset instructions.
+            </p>
+
+            <div className="flex flex-col gap-1">
+              <label
+                htmlFor="email"
+                className="font-medium text-sm text-gray-800 dark:text-white"
+              >
+                Email Address
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                placeholder="you@example.com"
+                className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-neutral-700 dark:text-white"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-blue-600 text-white hover:bg-blue-700 transition"
+            >
+              {isLoading ? "Sending..." : "Recover Password"}
+            </Button>
+          </form>
+        ) : (
+          <div className="text-center space-y-4">
+            <p className="text-green-600 font-medium">
+              Check your email for further instructions.
+            </p>
+            <button
+              onClick={() => setIsEmailSent(false)}
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Didn’t receive the email?
+            </button>
+          </div>
+        )}
+
+        <div className="mt-6 text-center">
+          <Link
+            to="/auth"
+            className="text-sm text-blue-600 hover:underline hover:text-blue-800"
+          >
+            Back to Login
+          </Link>
         </div>
+      </div>
     </div>
-    </>
-  )
+  );
 }
 
-export default ForgotPassword
+export default ForgotPassword;
