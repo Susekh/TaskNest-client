@@ -45,7 +45,7 @@ function RazorPage() {
           currency: order.currency,
           name: "TaskNet",
           description: "Project Upgrade",
-          image: "https://yourcdn.com/logo.png",
+          image: "https://task-net.s3.eu-north-1.amazonaws.com/1751279529406-logo.png",
           order_id: order.orderID,
           prefill: {
             name: order.notes.name,
