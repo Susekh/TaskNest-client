@@ -11,7 +11,6 @@ import {
   BarChart3,
   LucideIcon,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const featureList = [
@@ -22,14 +21,12 @@ const featureList = [
   { id: 5, content: "Team Task Assignment", icon: Users },
 ];
 
-type ColorKey = 'emerald' | 'blue' | 'purple' | 'orange' | 'red' | 'indigo';
-
 const capabilities: {
   id: number;
   title: string;
   description: string;
   icon: LucideIcon;
-  color: ColorKey;
+  color: string;
 }[] = [
   {
     id: 1,
@@ -51,7 +48,7 @@ const capabilities: {
     id: 3,
     title: "Task Assignment",
     description:
-      "Assign tasks with clear ownership, priorities, and due dates. Never lose track of who's doing what.",
+      "Assign tasks with clear ownership, priorities, and due dates.",
     icon: Users,
     color: "purple",
   },
@@ -75,7 +72,7 @@ const capabilities: {
     id: 6,
     title: "Performance Analytics",
     description:
-      "Track team productivity, identify bottlenecks, and optimize your workflow with detailed insights.",
+      "Track team productivity, identify bottlenecks, and optimize workflow.",
     icon: BarChart3,
     color: "indigo",
   },
@@ -105,290 +102,120 @@ const workflowSteps = [
   },
 ];
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
-  },
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-function Home() {
+export default function Home() {
   return (
-    <>
-      {/* Hero Section */}
-      <section className="min-h-screen bg-white dark:bg-neutral-950 flex pt-24">
-        <div className="container mx-auto px-6">
-          <motion.div
-            className="flex flex-col lg:flex-row items-center justify-between gap-16"
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-          >
-            {/* Left Content */}
-            <motion.div
-              className="flex-1 text-center lg:text-left"
-              variants={fadeIn}
+    <div className="min-h-screen bg-white dark:bg-[#121416] font-sans text-black dark:text-white flex flex-col">
+      {/* Main Content */}
+      <main className="flex-grow px-10 py-8 flex flex-col items-center">
+        <div className="w-full max-w-4xl">
+          {/* Hero Section */}
+          <div className="relative h-96 rounded-xl bg-gradient-to-br from-black via-gray-900 to-[#0a0a0a] mb-12 flex flex-col justify-end p-8 animate-fade-in">
+            <h1 className="text-4xl font-black mb-4 animate-slide-up delay-100 text-white">
+              Welcome to TaskNet
+            </h1>
+            <p className="text-base mb-6 animate-slide-up delay-200 text-gray-300">
+              Manage your projects efficiently with our intuitive platform.
+              Track progress, assign tasks, and collaborate seamlessly with your
+              team.
+            </p>
+            <Link
+              to="/dashboard"
+              className="transition-all duration-300 bg-[#b2cae5] hover:bg-[#d3e4f7] active:scale-95 text-[#121416] font-bold rounded-full px-5 py-2 shadow-md hover:shadow-lg inline-flex items-center gap-2 self-start"
             >
-              <motion.div
-                className="inline-flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-neutral-200 dark:border-neutral-700"
-                whileHover={{ scale: 1.05 }}
-              >
-                <Zap className="w-4 h-4 text-emerald-500" />
-                Setup in 60 seconds
-              </motion.div>
+              Get Started
+            </Link>
+          </div>
 
-              <motion.h1
-                className="text-5xl lg:text-7xl font-bold text-neutral-900 dark:text-white mb-6 leading-tight"
-                variants={fadeIn}
-              >
-                Project Management
-                <span className="block text-emerald-600 dark:text-emerald-400">
-                  Made Simple
-                </span>
-              </motion.h1>
-
-              <motion.p
-                className="text-xl text-neutral-600 dark:text-neutral-400 mb-8 max-w-2xl leading-relaxed"
-                variants={fadeIn}
-              >
-                Build sprints, assign tasks, track deadlines, and manage your
-                team with intuitive Kanban boards. Everything you need to
-                deliver projects on time.
-              </motion.p>
-
-              <motion.div
-                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-                variants={fadeIn}
-              >
-                <motion.button
-                  className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center gap-2 justify-center"
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => (window.location.href = "/dashboard")}
+          {/* Key Features */}
+          <section className="mb-16 animate-fade-in delay-200">
+            <h2 className="text-2xl font-bold mb-4 text-black dark:text-white">
+              Key Features
+            </h2>
+            <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+              {featureList.map((f) => (
+                <div
+                  key={f.id}
+                  className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] p-6 rounded-lg hover:scale-105 transform transition duration-300"
                 >
-                  Start For Free
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
+                  <f.icon className="w-6 h-6 mb-4 text-gray-800 dark:text-white" />
+                  <p className="text-lg text-black dark:text-white">
+                    {f.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
 
-                {/* <motion.button
-                  className="border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 hover:border-neutral-500 dark:hover:border-neutral-400 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Watch Demo
-                </motion.button> */}
-              </motion.div>
-            </motion.div>
-
-            {/* Right Features Card */}
-            <motion.div className="flex-1 max-w-md w-full" variants={fadeIn}>
-              <motion.div
-                className="bg-white dark:bg-neutral-900 p-8 rounded-2xl shadow-xl border border-neutral-100 dark:border-neutral-800"
-                whileHover={{ y: -5 }}
-                transition={{ duration: 0.2 }}
-              >
-                <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-6">
-                  Core Features
-                </h3>
-                <ul className="space-y-4">
-                  {featureList.map((feature, index) => {
-                    const IconComponent = feature.icon;
-                    return (
-                      <motion.li
-                        key={feature.id}
-                        className="flex items-center gap-4 group"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 + 0.5 }}
-                      >
-                        <motion.div
-                          className="bg-neutral-100 dark:bg-neutral-800 p-2 rounded-lg group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/30 transition-colors duration-200"
-                          whileHover={{ scale: 1.1 }}
-                        >
-                          <IconComponent className="w-5 h-5 text-neutral-600 dark:text-neutral-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors" />
-                        </motion.div>
-                        <span className="text-neutral-700 dark:text-neutral-300 font-medium">
-                          {feature.content}
-                        </span>
-                      </motion.li>
-                    );
-                  })}
-                </ul>
-              </motion.div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="py-20 bg-neutral-50 dark:bg-neutral-900">
-        <div className="container mx-auto px-6">
-          <motion.div
-            className="text-center mb-16"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn}
-          >
-            <h2 className="text-4xl lg:text-5xl font-bold text-neutral-900 dark:text-white mb-4">
+          {/* Workflow Steps */}
+          <section className="mb-16 animate-fade-in delay-300">
+            <h2 className="text-3xl font-bold mb-6 text-center text-black dark:text-white">
               Get Started in 3 Simple Steps
             </h2>
-            <p className="text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
-              From setup to delivery, we've streamlined every part of project
-              management
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="grid md:grid-cols-3 gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-          >
-            {workflowSteps.map((step) => {
-              const IconComponent = step.icon;
-              return (
-                <motion.div
-                  key={step.step}
-                  className="text-center"
-                  variants={fadeIn}
+            <div className="grid md:grid-cols-3 gap-8">
+              {workflowSteps.map((ws) => (
+                <div
+                  key={ws.step}
+                  className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] rounded-xl p-6 text-center hover:scale-105 transition-transform duration-300 shadow hover:shadow-xl"
                 >
-                  <motion.div
-                    className="mx-auto w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-4"
-                    whileHover={{ scale: 1.1 }}
-                  >
-                    <IconComponent className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
-                  </motion.div>
-                  <div className="text-emerald-600 dark:text-emerald-400 font-bold text-sm mb-2">
-                    {step.step}
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-300 dark:bg-[#2c3035] flex items-center justify-center">
+                    <ws.icon className="w-8 h-8 text-gray-800 dark:text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-3">
-                    {step.title}
+                  <span className="block text-[#3b82f6] font-bold mb-2">
+                    {ws.step}
+                  </span>
+                  <h3 className="text-xl font-semibold mb-1 text-black dark:text-white">
+                    {ws.title}
                   </h3>
-                  <p className="text-neutral-600 dark:text-neutral-400">
-                    {step.description}
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    {ws.description}
                   </p>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
+                </div>
+              ))}
+            </div>
+          </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white dark:bg-neutral-950">
-        <div className="container mx-auto px-6">
-          <motion.div
-            className="text-center mb-16"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn}
-          >
-            <h2 className="text-4xl lg:text-5xl font-bold text-neutral-900 dark:text-white mb-4">
+          {/* Capabilities */}
+          <section className="mb-16 animate-fade-in delay-400">
+            <h2 className="text-3xl font-bold mb-6 text-black dark:text-white">
               Everything You Need to Succeed
             </h2>
-            <p className="text-xl text-neutral-600 dark:text-neutral-400 max-w-3xl mx-auto">
-              Powerful features designed for modern teams. Sprint planning, task
-              management, and deadline tracking in one unified platform.
-            </p>
-          </motion.div>
-
-          <motion.div
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-          >
-            {capabilities.map((capability) => {
-              const IconComponent = capability.icon;
-              const colorClasses = {
-                emerald:
-                  "text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30",
-                blue: "text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30",
-                purple:
-                  "text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30",
-                orange:
-                  "text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30",
-                red: "text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30",
-                indigo:
-                  "text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30",
-              };
-
-              return (
-                <motion.div
-                  key={capability.id}
-                  className="bg-neutral-50 dark:bg-neutral-900 p-6 rounded-2xl border border-neutral-100 dark:border-neutral-800 hover:shadow-lg transition-all duration-200"
-                  variants={fadeIn}
-                  whileHover={{ y: -5, scale: 1.02 }}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {capabilities.map((c) => (
+                <div
+                  key={c.id}
+                  className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] p-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition duration-300"
                 >
-                  <motion.div
-                    className={`w-12 h-12 rounded-xl ${
-                      colorClasses[capability.color]
-                    } flex items-center justify-center mb-4`}
-                    whileHover={{ scale: 1.1 }}
+                  <div
+                    className={`w-12 h-12 mb-4 flex items-center justify-center rounded-xl bg-${c.color}-600 dark:bg-${c.color}-500`}
                   >
-                    <IconComponent className="w-6 h-6" />
-                  </motion.div>
-
-                  <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-3">
-                    {capability.title}
+                    <c.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2 text-black dark:text-white">
+                    {c.title}
                   </h3>
-
-                  <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                    {capability.description}
+                  <p className="text-gray-600 dark:text-gray-300">
+                    {c.description}
                   </p>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </div>
-      </section>
+                </div>
+              ))}
+            </div>
+          </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-neutral-50 dark:bg-neutral-900">
-        <div className="container mx-auto px-6 text-center">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeIn}
-          >
-            <h2 className="text-4xl lg:text-5xl font-bold text-neutral-900 dark:text-white mb-6">
+          {/* CTA */}
+          <section className="text-center py-12 animate-fade-in delay-500">
+            <h2 className="text-3xl font-bold mb-6 text-black dark:text-white">
               Ready to Transform Your Team's Productivity?
             </h2>
-
-            <motion.div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
-                className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl "
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link to={"/dashboard"} className="flex items-center gap-2 justify-center">
-                  Get Started Now
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </motion.button>
-            </motion.div>
-          </motion.div>
+            <Link
+              to="/dashboard"
+              className="transition-all duration-300 bg-[#b2cae5] hover:bg-[#d3e4f7] active:scale-95 text-[#121416] font-bold rounded-full px-6 py-3 inline-flex items-center gap-2 shadow-xl"
+            >
+              Get Started Now
+              <ArrowRight className="inline-block w-5 h-5" />
+            </Link>
+          </section>
         </div>
-      </section>
-    </>
+      </main>
+    </div>
   );
 }
-
-export default Home;
