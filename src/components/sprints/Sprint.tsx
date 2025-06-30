@@ -15,11 +15,10 @@ import { Button } from "../ui/button";
 function Sprint() {
   const { sprintId } = useParams();
   const [sprint, setSprint] = useState<SprintType | undefined>(undefined);
-  const [isColDisabled, setIsColDisabled] = useState(false);
   const navigate = useNavigate();
   const member = useSelector((store: RootState) => store.member.member);
-  
-  if(!member) {
+
+  if (!member) {
     navigate(-1);
   }
 
@@ -35,10 +34,6 @@ function Sprint() {
       setSprint(data.sprint);
     }
   }, [data]);
-
-  useEffect(() => {
-    setIsColDisabled((sprint?.columns?.length ?? 0) >= 7);
-  }, [sprint]);
 
   const createColumn = async () => {
     const promise = callApiPost(`${conf.backendUrl}/create/column/newColumn`, {
@@ -58,7 +53,7 @@ function Sprint() {
       },
       error: (err) => {
         console.error("Error creating column:", err);
-        return "Error creating column";
+        return `Error creating column`;
       },
     });
   };
@@ -190,7 +185,6 @@ function Sprint() {
 
                 {member?.role === "ADMIN" || member?.role === "MODERATOR" ? (
                   <Button
-                    disabled={isColDisabled}
                     onClick={createColumn}
                     className="flex items-center justify-center bg-teal-600 hover:bg-teal-700 transition-colors px-4 py-2 rounded-lg text-white font-medium shadow-sm"
                   >

@@ -1,5 +1,6 @@
 import { Sprint, User } from "@/types/types";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
+import toast from "react-hot-toast";
 
 type ApiPostType = {
   status: string;
@@ -22,14 +23,16 @@ const callApiPost = async (url: string, body: any) => {
 
     const res = await axios.post<ApiPostType>(url, body, {
       withCredentials: true,
-      headers: isFormData
-        ? {}
-        : { "Content-Type": "application/json" },
+      headers: isFormData ? {} : { "Content-Type": "application/json" },
     });
 
     return res;
   } catch (error) {
+    if (isAxiosError(error)) {
+      toast.error(error?.response?.data?.errMsgs?.otherErr?.msg);
+    }
     console.error("Error at callApiPost ::", error);
+
     return null;
   }
 };
