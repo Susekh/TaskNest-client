@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import conf from "@/conf/conf";
 import callApiPost from "@/utils/callApiPost";
+import toast from "react-hot-toast";
 
 declare global {
   interface Window {
@@ -76,7 +77,9 @@ function RazorPage() {
         razorpay.open();
       } catch (err) {
         console.error("Payment error:", err);
-        navigate(`/projects/${projectId}?payment=error`);
+        
+        toast.error("Error in payment.");
+        navigate(`/projects/${projectId}`);
       }
     };
 
