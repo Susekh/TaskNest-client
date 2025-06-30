@@ -20,7 +20,8 @@ type Props = {
   className: string;
   projectId: string;
   taskId: string;
-  setTaskMembers : Dispatch<SetStateAction<Member[]>>,
+  taskMembers: Member[];
+  setTaskMembers: Dispatch<SetStateAction<Member[]>>;
   onMembersAdded?: (memberIds: string[]) => void;
 };
 
@@ -38,6 +39,7 @@ function AddMemberToTask({
   className,
   projectId,
   taskId,
+  setTaskMembers,
   onMembersAdded,
 }: Props) {
   const [search, setSearch] = useState("");
@@ -118,8 +120,9 @@ function AddMemberToTask({
 
       if (response?.status === 200 || response?.status === 201) {
         setMembers(response?.data?.task?.members);
-        toast.success("Members added to task successfully");
 
+        toast.success("Members added to task successfully");
+        setTaskMembers(response?.data?.task?.members);
         // Call the callback function if provided
         if (onMembersAdded) {
           onMembersAdded(selectedMembers);
@@ -194,8 +197,8 @@ function AddMemberToTask({
                       key={member.id}
                       className={`flex items-center gap-4 p-2 cursor-pointer rounded border ${
                         isSelected
-                          ? "bg-blue-50 border-blue-300"
-                          : "hover:bg-gray-50 border-transparent"
+                          ? "bg-blue-50 dark:bg-gray-900 border-blue-300"
+                          : "dark:hover:bg-neutral-900 hover:bg-neutral-100 border-transparent"
                       }`}
                       onClick={() => handleSelectMember(member.id)}
                     >

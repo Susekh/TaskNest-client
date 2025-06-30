@@ -23,6 +23,8 @@ import TaskPage from "./pages/TaskPage.tsx";
 import InviteToProject from "./pages/InviteToProject.tsx";
 import Conversations from "./pages/Conversations.tsx";
 import { ThemeProvider } from "./components/ui/ThemeProvider.tsx";
+import PaymentOptionsPage from "./pages/UpgradeProject.tsx";
+import RazorPage from "./pages/RazorPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -142,6 +144,22 @@ const router = createBrowserRouter([
             <ContentPage />
           </ProtectRoutes>
         ),
+      },
+      {
+        path : "/upgrade/:projectId",
+        element : (
+          <ProtectRoutes isProtected={true} >
+            <PaymentOptionsPage/>
+          </ProtectRoutes>
+        )
+      },
+      {
+        path : "/payment/razorpay/:projectId",
+        element : (
+          <ProtectRoutes isProtected >
+            <RazorPage />
+          </ProtectRoutes>
+        )
       },
       {
         path: "/conversations/:roomId",

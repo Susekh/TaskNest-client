@@ -1,7 +1,7 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import DeleteTaskModal from "@/components/modals/delete/DeleteTasksModal";
 import { format } from "date-fns";
-import { Calendar, Users, Trash2 } from "lucide-react";
+import { Calendar, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Column, Member, Sprint } from "@/types/types";
 import { useSelector } from "react-redux";
@@ -32,7 +32,6 @@ const TaskCard = ({
   setColumns,
   columns,
 }: TaskCardProps) => {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const member = useSelector((store: RootState) => store.member.member);
 
   const handleDragStart = (
@@ -51,42 +50,33 @@ const TaskCard = ({
   };
 
   const handleDragEnd = (e: React.DragEvent) => {
-    if(member?.role === "CONTRIBUTER") return;
+    if (member?.role === "CONTRIBUTER") return;
     e.dataTransfer.setData("taskId", "");
     setActiveCard(null);
   };
 
-  const handleDeleteClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowDeleteModal(!showDeleteModal);
-  };
-
   return (
     <>
-      {showDeleteModal && (
-        <DeleteTaskModal
-          className="p-0 bg-white hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-800 text-red-500 cursor-pointer"
-          taskId={taskId}
-          setColumns={setColumns}
-          columns={columns}
-        />
-      )}
-
       <div
         draggable={member?.role !== "CONTRIBUTER"}
-        onDragStart={(e) => handleDragStart(e, taskId, taskName, index, member?.role)}
+        onDragStart={(e) =>
+          handleDragStart(e, taskId, taskName, index, member?.role)
+        }
         onDragEnd={handleDragEnd}
         className="rounded-lg border shadow-sm bg-card text-card-foreground hover:shadow-md transition-all dark:border-neutral-700 dark:bg-neutral-800 dark:shadow-neutral-900/30 mb-3 p-3 relative"
       >
         {}
         {member?.role === "ADMIN" || member?.role === "MODERATOR" ? (
           <button
-            onClick={handleDeleteClick}
             className="absolute top-2 right-2 text-neutral-400 hover:text-red-500 z-10"
             title="Delete task"
           >
-            <Trash2 className="w-4 h-4" />
+            <DeleteTaskModal
+              className="p-0 bg-white hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-800 text-neutral-400 hover:text-red-500 cursor-pointer"
+              taskId={taskId}
+              setColumns={setColumns}
+              columns={columns}
+            />
           </button>
         ) : (
           <></>

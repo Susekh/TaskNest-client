@@ -73,35 +73,36 @@ function ColumnComponent({
     }
   };
 
-  const deleteCol = async (colId: string) => {
-    try {
-      setDeletingCol(true);
-      setIsHovering(true);
-      const response = await axios.post(
-        `${conf.backendUrl}/delete/column/delete-column`,
-        { columnId: colId },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+ const deleteCol = async (colId: string) => {
+  const confirmed = window.confirm("Are you sure you want to delete this column? This action cannot be undone.");
+  if (!confirmed) return;
 
-      if (response.status === 200) {
-        toast.success(response.data.message);
-
-        setColumns((prev: Column[]) =>
-          prev.filter((col: Column) => col.id !== colId)
-        );
+  try {
+    setDeletingCol(true);
+    setIsHovering(true);
+    const response = await axios.post(
+      `${conf.backendUrl}/delete/column/delete-column`,
+      { columnId: colId },
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
       }
-    } catch (error) {
-      toast.error("Error occurred while deleting column");
-      console.log("Err at deleting column:", error);
-    } finally {
-      setColNameDisabled(true);
-      setDeletingCol(false);
-      setIsHovering(false);
+    );
+
+    if (response.status === 200) {
+      toast.success(response.data.message);
+      setColumns((prev: Column[]) => prev.filter((col: Column) => col.id !== colId));
     }
-  };
+  } catch (error) {
+    toast.error("Error occurred while deleting column");
+    console.log("Err at deleting column:", error);
+  } finally {
+    setColNameDisabled(true);
+    setDeletingCol(false);
+    setIsHovering(false);
+  }
+};
+
 
   const handleColNameChange = async (e: FormEvent) => {
     e.preventDefault();
@@ -222,17 +223,14 @@ function ColumnComponent({
 
       {/* Footer */}
       {member?.role === "ADMIN" || member?.role === "MODERATOR" ? (
-        <div className=" border-t border-neutral-200 flex items-center justify-center gap-4 dark:border-neutral-700 mt-auto bg-neutral-50/70 dark:bg-neutral-800/90 rounded-b-lg">
-          <p className="text-center text-sm text-neutral-500 dark:text-neutral-400 font-medium">
-            Add New Task
-          </p>
+       
           <CreateTasksModal
-            className="bg-neutral-50 hover:bg-neutral-50 hover:text-teal-400 p-0 border-none dark:bg-neutral-800"
+            className="bg-neutral-50 hover:bg-neutral-200 dark:hover:bg-neutral-900 hover:text-teal-400 p-0 dark:border-neutral-700 border-neutral-400 dark:bg-neutral-800"
             setColumns={setColumns}
             projectId={projectId}
             columnId={column.id}
           ></CreateTasksModal>
-        </div>
+      
       ) : (
         <></>
       )}

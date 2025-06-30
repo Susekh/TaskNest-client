@@ -14,7 +14,7 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import callApiPost from "@/utils/callApiPost";
 import conf from "@/conf/conf";
 import toast from "react-hot-toast";
-import { Plus } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { Column, Sprint } from "@/types/types";
 import { AxiosResponse } from "axios";
 import DateTimePicker from "@/components/ui/DateTimePicker";
@@ -59,7 +59,7 @@ function CreateTasksModal({
         {
           name,
           content,
-          deadline: deadline.toISOString(), // Convert to ISO string
+          deadline: deadline.toISOString(),
           columnId,
           projectId,
         }
@@ -88,7 +88,10 @@ function CreateTasksModal({
     <Dialog>
       <DialogTrigger asChild>
         <Button className={className} variant="outline">
-          <Plus />
+          <p className="text-center text-sm text-neutral-500 p-2 dark:text-neutral-400 font-medium">
+            Add New Task
+          </p>
+          <PlusCircle />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

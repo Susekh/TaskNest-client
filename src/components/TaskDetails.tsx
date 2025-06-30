@@ -303,6 +303,7 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
                 <></>
               ) : (
                 <AddMemberToTask
+                  taskMembers={taskMembers}
                   setTaskMembers={setTaskMembers}
                   taskId={task.id}
                   projectId={task.projectId}
@@ -349,7 +350,7 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
                         <button
                           onClick={() => handleRemoveMember(m.id)}
                           disabled={removingMemberId === m.id}
-                          className={`ml-2 p-1 rounded-full hover:bg-teal-100 dark:hover:bg-teal-800 transition-colors ${
+                          className={`ml-2 p-1 rounded-full hover:bg-teal-100 dark:hover:bg-gray-800 transition-colors ${
                             removingMemberId === m.id
                               ? "opacity-50 cursor-not-allowed"
                               : ""
@@ -359,7 +360,10 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
                           {removingMemberId ? (
                             <Loader2 className="animate-spin" />
                           ) : (
-                            <X size={16} className="text-teal-600" />
+                            <X
+                              size={16}
+                              className="text-gray-600 hover:text-red-700"
+                            />
                           )}
                         </button>
                       )}

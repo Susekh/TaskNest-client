@@ -15,7 +15,7 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import callApiPost from "@/utils/callApiPost";
 import conf from "@/conf/conf";
 import toast from "react-hot-toast";
-import { X } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Column } from "@/types/types";
 import { AxiosResponse } from "axios";
 
@@ -84,7 +84,7 @@ function DeleteTaskModal({
       <Dialog>
         <DialogTrigger asChild>
           <Button className={className}>
-            <X className="h-3.5 w-3.5" />
+            <Trash2 className="h-3.5 w-3.5" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px] dark:bg-neutral-800 bg-white">
