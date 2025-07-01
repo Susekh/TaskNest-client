@@ -521,7 +521,7 @@ function Project() {
                       <TooltipTrigger asChild>
                         <div>
                           <CreateSprintModal
-                            disabled={sprints.length >= 5}
+                            disabled={!project.isPro}
                             className="bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-700 dark:hover:bg-teal-800 shadow-md"
                             projectId={project.id}
                           />
