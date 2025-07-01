@@ -475,7 +475,7 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
               </button>
             </div>
             <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-              Supports images, PDFs, and documents (max 5MB)
+              Supports images, PDFs, and documents
             </p>
           </form>
         </section>

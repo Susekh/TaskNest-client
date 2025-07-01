@@ -11,6 +11,7 @@ import { SprintStatus, Sprint as SprintType } from "@/types/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { Button } from "../ui/button";
+import { GenerateBoardModal } from "../modals/create/GenerateSprintBoard.ai";
 
 function Sprint() {
   const { sprintId } = useParams();
@@ -91,7 +92,11 @@ function Sprint() {
                   Sprint ID: {sprintId}
                 </p>
               </div>
-
+              
+              {
+                sprint.columns.length ? "" : <GenerateBoardModal sprintId={sprintId} setSprint={setSprint} />
+              }
+              
               <div className="mt-4 md:mt-0 flex flex-wrap gap-3">
                 <div className="bg-gray-100 dark:bg-neutral-800/50 border border-gray-200 dark:border-neutral-700 rounded-lg px-3 py-2 flex items-center">
                   <Calendar
