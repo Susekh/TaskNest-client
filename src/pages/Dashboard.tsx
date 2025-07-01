@@ -67,7 +67,7 @@ export default function Dashboard() {
 
               <div
                 ref={carouselRef}
-                className="flex overflow-x-auto hide-scrollbar gap-5 px-2 py-2 scroll-smooth"
+                className="flex overflow-hidden gap-5 px-2 py-2 scroll-smooth"
               >
                 {user.userData?.members?.length ? (
                   user.userData.members.map((m, idx) => (

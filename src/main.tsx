@@ -25,6 +25,8 @@ import Conversations from "./pages/Conversations.tsx";
 import { ThemeProvider } from "./components/ui/ThemeProvider.tsx";
 import PaymentOptionsPage from "./pages/UpgradeProject.tsx";
 import RazorPage from "./pages/RazorPage.tsx";
+import FeaturesPage from "./pages/Features.tsx";
+import PricingSection from "./pages/Pricing.tsx";
 
 const router = createBrowserRouter([
   {
@@ -136,6 +138,22 @@ const router = createBrowserRouter([
             element: <HandleGoogleOauth />,
           },
         ],
+      },
+      {
+        path: "/features",
+        element : (
+          <ProtectRoutes isProtected={false} >
+            <FeaturesPage />
+          </ProtectRoutes>
+        )
+      },
+      {
+        path : "/pricing",
+        element : (
+          <ProtectRoutes isProtected={false} >
+            <PricingSection/>
+          </ProtectRoutes>
+        )
       },
       {
         path: "/content",
