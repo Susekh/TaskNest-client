@@ -18,6 +18,9 @@ import { PlusCircle } from "lucide-react";
 import { Column, Sprint } from "@/types/types";
 import { AxiosResponse } from "axios";
 import DateTimePicker from "@/components/ui/DateTimePicker";
+import MDEditor from "@uiw/react-md-editor";
+import "@uiw/react-md-editor/markdown-editor.css";
+import "@uiw/react-markdown-preview/markdown.css";
 
 interface Props {
   className: string;
@@ -39,7 +42,7 @@ function CreateTasksModal({
   projectId,
 }: Props) {
   const [name, setName] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState<string>("");
   const [deadline, setDeadline] = useState<Date | undefined>();
   const [loading, setLoading] = useState(false);
 
@@ -54,16 +57,13 @@ function CreateTasksModal({
     }
 
     try {
-      const res = await callApiPost(
-        `${conf.backendUrl}/create/task/newTask`,
-        {
-          name,
-          content,
-          deadline: deadline.toISOString(),
-          columnId,
-          projectId,
-        }
-      ) as AxiosResponse<ApiNewTaskRes> | null;
+      const res = (await callApiPost(`${conf.backendUrl}/create/task/newTask`, {
+        name,
+        content,
+        deadline: deadline.toISOString(),
+        columnId,
+        projectId,
+      })) as AxiosResponse<ApiNewTaskRes> | null;
 
       if (res?.data?.column) {
         setColumns((prevColumns: Column[]) =>
@@ -81,6 +81,7 @@ function CreateTasksModal({
     } catch (error) {
       console.error("Error in creating Task", error);
       toast.error("Can't create Task");
+      setLoading(false);
     }
   };
 
@@ -94,11 +95,11 @@ function CreateTasksModal({
           <PlusCircle />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-full max-w-5xl">
         <DialogHeader>
           <DialogTitle>Add new item</DialogTitle>
           <DialogDescription>
-            Fill up details for your new Item
+            Fill up details for your new item
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={createProject} className="grid gap-4 py-4">
@@ -113,17 +114,20 @@ function CreateTasksModal({
               className="col-span-3"
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="content" className="text-right">
+
+          <div className="grid grid-cols-4 items-start gap-4">
+            <Label htmlFor="content" className="text-right pt-2">
               Content
             </Label>
-            <Input
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="col-span-3"
-            />
+            <div className="col-span-3">
+              <MDEditor
+                value={content}
+                onChange={(val) => setContent(val || "")}
+                height={200}
+              />
+            </div>
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="deadline" className="text-right">
               End Date
@@ -132,6 +136,7 @@ function CreateTasksModal({
               <DateTimePicker value={deadline} onChange={setDeadline} />
             </div>
           </div>
+
           <DialogFooter>
             <Button type="button" variant="outline">
               <DialogClose>Cancel</DialogClose>

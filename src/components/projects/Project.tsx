@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import callApiPost from "@/utils/callApiPost";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import { format, isAfter, isBefore, parseISO } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
@@ -28,7 +28,6 @@ import {
 import { AxiosResponse } from "axios";
 import { setUserMember } from "@/store/MemberSlice";
 import { Member } from "@/types/types";
-import { cn } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -162,7 +161,7 @@ function Project() {
         return "bg-gray-300 text-gray-800 dark:bg-gray-700 dark:text-gray-200";
       } else if (isAfter(today, start) && isBefore(today, end)) {
         // Ongoing sprint
-        return "bg-teal-600 text-white dark:bg-teal-400 dark:text-teal-900";
+        return "bg-slate-600 text-white dark:bg-slate-400 dark:text-slate-900";
       } else if (isAfter(today, end)) {
         // Finished sprint (past deadline)
         return "bg-red-600 text-white dark:bg-red-500 dark:text-red-200";
@@ -208,6 +207,8 @@ function Project() {
             member.id === memberId ? { ...member, role: newRole } : member
           )
         );
+      } else {
+        toast.error(res?.data?.msg || "Something went wrong.");
       }
     } catch (error) {
       toast.error("Failed to update member role");
@@ -220,7 +221,8 @@ function Project() {
     navigate("/conversations/" + roomId);
   }
 
-  async function handleRemoveMember(memberId: string) {
+  async function handleRemoveMember(e : MouseEvent, memberId: string) {
+    e.stopPropagation();
     try {
       const res = await callApiPost(
         `${conf.backendUrl}/delete/project/delete-member`,
@@ -242,7 +244,7 @@ function Project() {
   if (error)
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-teal-500 dark:text-teal-400 text-lg">
+        <p className="text-slate-500 dark:text-slate-400 text-lg">
           Error: {error}
         </p>
       </div>
@@ -262,7 +264,7 @@ function Project() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row items-start md:items-center mb-8 pb-6 border-b border-neutral-200 dark:border-neutral-800">
           <div className="flex items-center gap-4 w-full mb-4 md:mb-0">
-            <div className="w-12 h-12 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center overflow-hidden ring-2 ring-teal-600 dark:ring-teal-700">
+            <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-900/30 flex items-center justify-center overflow-hidden ring-2 ring-slate-600 dark:ring-slate-700">
               {project.imageUrl ? (
                 <img
                   className="w-full h-full object-cover"
@@ -272,7 +274,7 @@ function Project() {
               ) : (
                 <FolderOpen
                   size={24}
-                  className="text-teal-600 dark:text-teal-500"
+                  className="text-slate-600 dark:text-slate-500"
                 />
               )}
             </div>
@@ -284,7 +286,7 @@ function Project() {
                 <span className="px-2.5 py-0.5 min-w-[5.5rem] text-center rounded-full bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow-sm">
                   Upcoming
                 </span>
-                <span className="px-2.5 py-0.5 min-w-[5.5rem] text-center rounded-full bg-teal-600 dark:bg-teal-700 text-white shadow-md">
+                <span className="px-2.5 py-0.5 min-w-[5.5rem] text-center rounded-full bg-slate-600 dark:bg-slate-700 text-white shadow-md">
                   Active
                 </span>
                 <span className="px-2.5 py-0.5 min-w-[5.5rem] text-center rounded-full bg-red-600 dark:bg-red-700 text-white dark:text-neutral-300 shadow-md">
@@ -359,23 +361,30 @@ function Project() {
                       <div
                         key={index}
                         onClick={() => redirectToConversations(m.id)}
-                        className="flex items-center gap-3 p-3 hover:cursor-pointer bg-neutral-50 dark:bg-neutral-800 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                        className="flex items-center gap-3 p-3 rounded-md bg-neutral-50 dark:bg-neutral-950 hover:bg-neutral-100 dark:hover:bg-black transition-colors cursor-pointer"
                       >
                         <img
                           src={
                             m.user?.imgUrl ||
-                            `https://ui-avatars.com/api/?name=${
+                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
                               m.user?.name || "User"
-                            }&background=B91C1C&color=ffffff`
+                            )}&background=B91C1C&color=ffffff`
                           }
                           alt={m.user?.name || "User"}
-                          className="w-10 h-10 rounded-full object-cover border-2 border-teal-500 dark:border-teal-700"
+                          className="w-10 h-10 rounded-full object-cover border-2 border-slate-500 dark:border-slate-700 flex-shrink-0"
                         />
-                        <div>
-                          <h3 className="font-medium">
+                        <div className="bg-neutral-100 dark:bg-neutral-900 px-3 py-2 rounded-md flex flex-col justify-center min-w-[160px] max-w-[160px]">
+                          <h3
+                            className="font-semibold text-sm text-neutral-900 dark:text-neutral-100 uppercase truncate"
+                            title={m.user?.name || "Unknown"}
+                            style={{ lineHeight: 1 }}
+                          >
                             {m.user?.name || "Unknown"}
                           </h3>
-                          <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                          <p
+                            className="text-xs text-neutral-500 dark:text-neutral-400 truncate"
+                            title={`@${m.user?.username || "username"}`}
+                          >
                             @{m.user?.username || "username"}
                           </p>
                         </div>
@@ -386,8 +395,9 @@ function Project() {
                               <DropdownMenuTrigger asChild>
                                 <Button
                                   variant="ghost"
-                                  className="flex items-center gap-1 text-sm px-2 py-1 bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-100 hover:bg-teal-200 dark:hover:bg-teal-800"
+                                  className="flex items-center gap-1 text-sm px-2 py-1 bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 rounded w-28 h-8"
                                   onClick={(e) => e.stopPropagation()}
+                                  aria-label={`${m.role || "Member"} options`}
                                 >
                                   {m.role || "Member"}
                                   <ChevronDown className="w-4 h-4" />
@@ -397,13 +407,8 @@ function Project() {
                                 className="w-56"
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                {m.role !== "ADMIN" && (
+                                {m.role !== "ADMIN" && m.id !== member.id && (
                                   <DropdownMenuItem
-                                    className={cn(
-                                      m.id === member.id
-                                        ? "hidden"
-                                        : "opacity-1"
-                                    )}
                                     onClick={() =>
                                       handleChangeRole(m.id, "ADMIN")
                                     }
@@ -412,39 +417,31 @@ function Project() {
                                     Make Admin
                                   </DropdownMenuItem>
                                 )}
-                                {m.role !== "MODERATOR" && (
-                                  <DropdownMenuItem
-                                    className={cn(
-                                      m.id === member.id
-                                        ? "hidden"
-                                        : "opacity-1"
-                                    )}
-                                    onClick={() =>
-                                      handleChangeRole(m.id, "MODERATOR")
-                                    }
-                                  >
-                                    <Shield className="w-4 h-4 mr-2" />
-                                    Make Moderator
-                                  </DropdownMenuItem>
-                                )}
-                                {m.role !== "CONTRIBUTER" && (
-                                  <DropdownMenuItem
-                                    className={cn(
-                                      m.id === member.id
-                                        ? "hidden"
-                                        : "opacity-1"
-                                    )}
-                                    onClick={() =>
-                                      handleChangeRole(m.id, "CONTRIBUTER")
-                                    }
-                                  >
-                                    <Shield className="w-4 h-4 mr-2" />
-                                    Make Contributor
-                                  </DropdownMenuItem>
-                                )}
+                                {m.role !== "MODERATOR" &&
+                                  m.id !== member.id && (
+                                    <DropdownMenuItem
+                                      onClick={() =>
+                                        handleChangeRole(m.id, "MODERATOR")
+                                      }
+                                    >
+                                      <Shield className="w-4 h-4 mr-2" />
+                                      Make Moderator
+                                    </DropdownMenuItem>
+                                  )}
+                                {m.role !== "CONTRIBUTER" &&
+                                  m.id !== member.id && (
+                                    <DropdownMenuItem
+                                      onClick={() =>
+                                        handleChangeRole(m.id, "CONTRIBUTER")
+                                      }
+                                    >
+                                      <Shield className="w-4 h-4 mr-2" />
+                                      Make Contributor
+                                    </DropdownMenuItem>
+                                  )}
                                 <DropdownMenuItem
-                                  onClick={() => handleRemoveMember(m.id)}
-                                  className="text-red-600 focus:bg-teal-100 dark:focus:bg-red-900"
+                                  onClick={(e) => handleRemoveMember(e, m.id)}
+                                  className="text-red-600 focus:bg-slate-100 dark:focus:bg-red-900"
                                 >
                                   {m.id === member.id ? (
                                     <span className="flex items-center text-red-500">
@@ -461,8 +458,41 @@ function Project() {
                               </DropdownMenuContent>
                             </DropdownMenu>
                           ) : (
-                            <div className="flex items-center gap-1 text-sm px-2 py-2 rounded-lg bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-100">
-                              {m.role || "Member"}
+                            <div className="flex items-center gap-1 text-xs px-3 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 w-28 h-8 justify-center select-none cursor-default">
+                              {m.id === member?.id ? (
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      className="flex items-center justify-center gap-1 text-xs px-3 py-1 dark:bg-gray-800 bg-transparent rounded w-full h-full"
+                                      onClick={(e) => e.stopPropagation()}
+                                      aria-label={`${
+                                        m.role || "Member"
+                                      } options`}
+                                    >
+                                      {m.role || "Member"}
+                                      <ChevronDown className="w-3 h-3" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent className="text-sm">
+                                    <DropdownMenuItem
+                                      onClick={(e) => handleRemoveMember(e, m.id)}
+                                      className="text-red-600 focus:bg-gray-200 dark:focus:bg-red-900"
+                                      role="menuitem"
+                                      tabIndex={-1}
+                                    >
+                                      <p className="flex items-center text-red-500">
+                                        <BiExit className="w-4 h-4 mr-2" />
+                                        Leave the project
+                                      </p>
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              ) : (
+                                <span aria-label={m.role || "Member"}>
+                                  {m.role || "Member"}
+                                </span>
+                              )}
                             </div>
                           )}
                         </div>
@@ -473,7 +503,7 @@ function Project() {
                       <p className="text-neutral-500 dark:text-neutral-400 mb-3">
                         No team members yet
                       </p>
-                      <Button className="bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-700 dark:hover:bg-teal-800">
+                      <Button className="bg-slate-600 hover:bg-slate-700 text-white dark:bg-slate-700 dark:hover:bg-slate-800">
                         Add Members
                       </Button>
                     </div>
@@ -494,11 +524,11 @@ function Project() {
                       }
                       alt={member.user?.name || "User"}
                       title={member.user?.name || "User"}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-teal-500 dark:border-teal-700"
+                      className="w-8 h-8 rounded-full object-cover border-2 border-slate-500 dark:border-slate-700"
                     />
                   ))}
                   {members.length > 5 && (
-                    <div className="w-8 h-8 rounded-full bg-teal-600 dark:bg-teal-700 flex items-center justify-center text-xs font-medium text-white">
+                    <div className="w-8 h-8 rounded-full bg-slate-600 dark:bg-slate-700 flex items-center justify-center text-xs font-medium text-white">
                       +{members.length - 5}
                     </div>
                   )}
@@ -522,7 +552,7 @@ function Project() {
                         <div>
                           <CreateSprintModal
                             disabled={!project.isPro && sprints.length >= 5}
-                            className="bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-700 dark:hover:bg-teal-800 shadow-md"
+                            className="bg-slate-600 hover:bg-slate-700 text-white dark:bg-slate-700 dark:hover:bg-slate-800 shadow-md"
                             projectId={project.id}
                           />
                         </div>

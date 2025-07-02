@@ -183,7 +183,7 @@ const router = createBrowserRouter([
         path: "/conversations/:roomId",
         element: (
           <ProtectRoutes isProtected={true}>
-            <Conversations />
+            <Conversations/>
           </ProtectRoutes>
         ),
       },

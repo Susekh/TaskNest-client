@@ -34,6 +34,9 @@ const TaskCard = ({
 }: TaskCardProps) => {
   const member = useSelector((store: RootState) => store.member.member);
 
+  const now = new Date();
+  const isExpired = new Date(taskDeadline) < now;
+
   const handleDragStart = (
     e: React.DragEvent,
     taskId: string,
@@ -56,59 +59,64 @@ const TaskCard = ({
   };
 
   return (
-    <>
-      <div
-        draggable={member?.role !== "CONTRIBUTER"}
-        onDragStart={(e) =>
-          handleDragStart(e, taskId, taskName, index, member?.role)
-        }
-        onDragEnd={handleDragEnd}
-        className="rounded-lg border shadow-sm bg-card text-card-foreground hover:shadow-md transition-all dark:border-neutral-700 dark:bg-neutral-800 dark:shadow-neutral-900/30 mb-3 p-3 relative"
-      >
-        {}
-        {member?.role === "ADMIN" || member?.role === "MODERATOR" ? (
-          <button
-            className="absolute top-2 right-2 text-neutral-400 hover:text-red-500 z-10"
-            title="Delete task"
-          >
-            <DeleteTaskModal
-              className="p-0 bg-white hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-800 text-neutral-400 hover:text-red-500 cursor-pointer"
-              taskId={taskId}
-              setColumns={setColumns}
-              columns={columns}
-            />
-          </button>
-        ) : (
-          <></>
-        )}
+    <div
+      draggable={member?.role !== "CONTRIBUTER"}
+      onDragStart={(e) =>
+        handleDragStart(e, taskId, taskName, index, member?.role)
+      }
+      onDragEnd={handleDragEnd}
+      className={`relative mb-3 p-3 rounded-lg border shadow-sm hover:shadow-md transition-all
+  bg-card text-card-foreground  dark:bg-neutral-800 dark:shadow-neutral-900/30
+  ${isExpired ? "border-l-4 border-red-500 pl-2" : "dark:border-neutral-700"}`}
 
-        <Link to={`./task/${taskId}`} className="block w-full h-full">
-          <div className="flex items-start justify-between">
-            <h3 className="font-medium text-base text-neutral-900 dark:text-neutral-100">
-              {taskName}
-            </h3>
-          </div>
+    >
+      {/* Delete Button */}
+      {(member?.role === "ADMIN" || member?.role === "MODERATOR") && (
+        <button
+          className="absolute top-2 right-2 text-neutral-400 hover:text-red-500 z-10"
+          title="Delete task"
+        >
+          <DeleteTaskModal
+            className="p-0 bg-white hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-800 text-neutral-400 hover:text-red-500 cursor-pointer"
+            taskId={taskId}
+            setColumns={setColumns}
+            columns={columns}
+          />
+        </button>
+      )}
 
-          <div className="flex flex-wrap gap-2 text-xs mt-2">
-            <div className="flex items-center text-neutral-500 dark:text-neutral-400">
-              <Calendar className="h-3 w-3 mr-1" />
-              <span>{format(new Date(taskDeadline), "MMM d, yyyy")}</span>
-            </div>
+      <Link to={`./task/${taskId}`} className="block w-full h-full">
+        <div className="flex items-start justify-between">
+          <h3 className="font-medium text-base text-neutral-900 dark:text-neutral-100">
+            {taskName}
+          </h3>
+        </div>
 
-            <div className="flex items-center text-neutral-500 dark:text-neutral-400">
-              <Users className="h-3 w-3 mr-1" />
-              <span>
-                {Array.isArray(taskMembers) && taskMembers.length > 0
-                  ? `${taskMembers.length} ${
-                      taskMembers.length === 1 ? "member" : "members"
-                    }`
-                  : "None"}
+        <div className="flex flex-wrap gap-2 text-xs mt-2 items-center">
+          <div className="flex items-center text-neutral-500 dark:text-neutral-400">
+            <Calendar className="h-3 w-3 mr-1" />
+            <span>{format(new Date(taskDeadline), "MMM d, yyyy h:mm a")}</span>
+
+            {isExpired && (
+              <span className="ml-2 px-2 py-0.5 rounded-full bg-red-100 text-red-600 text-[10px] font-semibold tracking-wide uppercase dark:bg-red-800/30 dark:text-red-300">
+                Expired
               </span>
-            </div>
+            )}
           </div>
-        </Link>
-      </div>
-    </>
+
+          <div className="flex items-center text-neutral-500 dark:text-neutral-400">
+            <Users className="h-3 w-3 mr-1" />
+            <span>
+              {Array.isArray(taskMembers) && taskMembers.length > 0
+                ? `${taskMembers.length} ${
+                    taskMembers.length === 1 ? "member" : "members"
+                  }`
+                : "None"}
+            </span>
+          </div>
+        </div>
+      </Link>
+    </div>
   );
 };
 

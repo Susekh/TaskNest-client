@@ -11,9 +11,14 @@ import conf from "@/conf/conf";
 import callApiPost from "@/utils/callApiPost";
 import AddMemberToTask from "./modals/addProfiles/AddMemberToTask";
 import { useNavigate } from "react-router-dom";
-import { X, MessageCircle, Paperclip, Loader2 } from "lucide-react";
+import "@uiw/react-markdown-preview/markdown.css";
+import { X, MessageCircle, Paperclip, Loader2, Users } from "lucide-react";
 import { Member, Message, Task } from "@/types/types";
 import axios, { AxiosResponse } from "axios";
+import MDEditor from "@uiw/react-md-editor";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Button } from "./ui/button";
+import { ScrollArea } from "./ui/scroll-area";
 
 interface TaskDetailsProps {
   task: Task;
@@ -268,113 +273,134 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 text-neutral-800 dark:text-neutral-200">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="flex flex-col gap-6">
         {/* Left Panel: Task Details */}
-        <aside className="md:col-span-1 bg-white dark:bg-neutral-900 border-t-4 border-teal-500 p-5 rounded-lg shadow space-y-6">
+        <aside className="md:col-span-1 bg-white dark:bg-neutral-900 border-t-4 border-slate-500 p-5 rounded-lg shadow space-y-6">
           <div className="space-y-4">
             <h1 className="text-2xl font-bold">{task.name}</h1>
 
-            <section>
-              <h2 className="text-sm font-semibold mb-1">📝 Description</h2>
-              <p className="text-sm bg-neutral-50 dark:bg-neutral-800 dark:border-neutral-700 border p-3 rounded">
-                {task.content}
-              </p>
+            <section className="mb-6">
+              <h2 className="text-base font-semibold text-neutral-800 dark:text-neutral-200 flex items-center gap-1">
+                📝 <span>Description</span>
+              </h2>
+              <div className="mt-2 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-gray-950 shadow-sm">
+                <div className="p-2 prose prose-sm dark:prose-invert max-w-none">
+                  <MDEditor.Markdown source={task.content} />
+                </div>
+              </div>
             </section>
+
             <section className="space-y-2 text-sm">
               <p>
-                <strong className="text-teal-600">Deadline:</strong>{" "}
+                <strong className="text-slate-600">Deadline:</strong>{" "}
                 {format(new Date(task.deadline), "PPPp")}
               </p>
               <p>
-                <strong className="text-teal-600">Created:</strong>{" "}
+                <strong className="text-slate-600">Created:</strong>{" "}
                 {format(new Date(task.createdAt), "PPPp")}
               </p>
               <p>
-                <strong className="text-teal-600">Updated:</strong>{" "}
+                <strong className="text-slate-600">Updated:</strong>{" "}
                 {format(new Date(task.updatedAt), "PPPp")}
               </p>
             </section>
           </div>
 
           <section className="space-y-4">
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-sm font-semibold">👥 Members</h2>
-              {member?.role === "CONTRIBUTER" ? (
-                <></>
-              ) : (
-                <AddMemberToTask
-                  taskMembers={taskMembers}
-                  setTaskMembers={setTaskMembers}
-                  taskId={task.id}
-                  projectId={task.projectId}
-                  className="bg-teal-600 text-white hover:bg-teal-700 text-xs px-2 py-1 rounded"
-                />
-              )}
-            </div>
-            {taskMembers.length > 0 ? (
-              <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-                {taskMembers.map((m) => (
-                  <div
-                    key={m.id}
-                    className="flex items-center justify-between bg-white dark:bg-neutral-800 border dark:border-neutral-700 rounded-lg p-2 shadow-sm hover:bg-neutral-50 dark:hover:bg-neutral-700"
+            <div className="flex items-center justify-between">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="justify-start gap-2"
                   >
-                    <div
-                      className="flex items-center gap-3 flex-1 cursor-pointer"
-                      onClick={() => handleGoToConversation(m.id)}
-                    >
-                      <div className="relative">
-                        <img
-                          src={
-                            m.user?.imgUrl || "https://github.com/shadcn.png"
-                          }
-                          alt={m.user?.name || "User"}
-                          className="w-10 h-10 rounded-full object-cover border-2 border-neutral-200 dark:border-neutral-600"
-                        />
-                        <MessageCircle
-                          size={14}
-                          className="absolute bottom-0 right-0 bg-white dark:bg-neutral-900 rounded-full p-1 text-teal-500"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-medium">
-                          {m.user?.name || "Unnamed"}
-                        </p>
-                        <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                          Click to message
-                        </p>
-                      </div>
-                    </div>
-                    {m.id !== member?.id &&
-                      (member?.role === "ADMIN" ||
-                        member?.role === "MODERATOR") && (
-                        <button
-                          onClick={() => handleRemoveMember(m.id)}
-                          disabled={removingMemberId === m.id}
-                          className={`ml-2 p-1 rounded-full hover:bg-teal-100 dark:hover:bg-gray-800 transition-colors ${
-                            removingMemberId === m.id
-                              ? "opacity-50 cursor-not-allowed"
-                              : ""
-                          }`}
-                          title="Remove member"
-                        >
-                          {removingMemberId ? (
-                            <Loader2 className="animate-spin" />
-                          ) : (
-                            <X
-                              size={16}
-                              className="text-gray-600 hover:text-red-700"
-                            />
-                          )}
-                        </button>
-                      )}
+                    <Users size={16} />
+                    <span>Members ({taskMembers.length})</span>
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 max-h-96 p-2 space-y-2">
+                  <div className="flex justify-between items-center mb-2">
+                    <h2 className="text-sm font-semibold">👥 Task Members</h2>
+                    {member?.role !== "CONTRIBUTER" && (
+                      <AddMemberToTask
+                        taskMembers={taskMembers}
+                        setTaskMembers={setTaskMembers}
+                        taskId={task.id}
+                        projectId={task.projectId}
+                        className="bg-slate-600 text-white hover:bg-slate-700 text-xs px-2 py-1 rounded"
+                      />
+                    )}
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-800 p-4 rounded text-center">
-                No members assigned to this task.
-              </p>
-            )}
+                  {taskMembers.length > 0 ? (
+                    <ScrollArea className="h-72 pr-2">
+                      <div className="space-y-2">
+                        {taskMembers.map((m) => (
+                          <div
+                            key={m.id}
+                            className="flex items-center justify-between bg-white dark:bg-neutral-800 border dark:border-neutral-700 rounded-lg p-2 shadow-sm hover:bg-neutral-50 dark:hover:bg-neutral-700"
+                          >
+                            <div
+                              className="flex items-center gap-3 flex-1 cursor-pointer"
+                              onClick={() => handleGoToConversation(m.id)}
+                            >
+                              <div className="relative">
+                                <img
+                                  src={
+                                    m.user?.imgUrl ||
+                                    "https://github.com/shadcn.png"
+                                  }
+                                  alt={m.user?.name || "User"}
+                                  className="w-10 h-10 rounded-full object-cover border-2 border-neutral-200 dark:border-neutral-600"
+                                />
+                                <MessageCircle
+                                  size={14}
+                                  className="absolute bottom-0 right-0 bg-white dark:bg-neutral-900 rounded-full p-1 text-slate-500"
+                                />
+                              </div>
+                              <div>
+                                <p className="font-medium">
+                                  {m.user?.name || "Unnamed"}
+                                </p>
+                                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                                  Click to message
+                                </p>
+                              </div>
+                            </div>
+                            {m.id !== member?.id &&
+                              (member?.role === "ADMIN" ||
+                                member?.role === "MODERATOR") && (
+                                <button
+                                  onClick={() => handleRemoveMember(m.id)}
+                                  disabled={removingMemberId === m.id}
+                                  className={`ml-2 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors ${
+                                    removingMemberId === m.id
+                                      ? "opacity-50 cursor-not-allowed"
+                                      : ""
+                                  }`}
+                                  title="Remove member"
+                                >
+                                  {removingMemberId === m.id ? (
+                                    <Loader2 className="animate-spin" />
+                                  ) : (
+                                    <X
+                                      size={16}
+                                      className="text-gray-600 hover:text-red-700"
+                                    />
+                                  )}
+                                </button>
+                              )}
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  ) : (
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center">
+                      No members assigned to this task.
+                    </p>
+                  )}
+                </PopoverContent>
+              </Popover>
+            </div>
           </section>
         </aside>
 
@@ -420,13 +446,13 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
             {file && (
               <div className="flex items-center justify-between mb-2 bg-neutral-100 dark:bg-neutral-700 p-2 rounded">
                 <div className="flex items-center gap-2">
-                  <Paperclip size={16} className="text-teal-500" />
+                  <Paperclip size={16} className="text-slate-500" />
                   <span className="text-sm truncate max-w-xs">{file.name}</span>
                 </div>
                 <button
                   type="button"
                   onClick={handleRemoveFile}
-                  className="text-teal-500 hover:text-teal-700"
+                  className="text-slate-500 hover:text-slate-700"
                 >
                   {" "}
                   {isUploading ? (
@@ -465,7 +491,7 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
               />
               <button
                 type="submit"
-                className="bg-teal-500 hover:bg-teal-600 text-white px-4 rounded flex items-center justify-center min-w-[80px]"
+                className="bg-slate-500 hover:bg-slate-600 text-white px-4 rounded flex items-center justify-center min-w-[80px]"
               >
                 {isSending ? (
                   <Loader2 size={20} className="animate-spin" />

@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { IndianRupee, Zap } from "lucide-react";
 
 export default function PaymentOptionsPage() {
   const { projectId } = useParams();
@@ -10,15 +9,8 @@ export default function PaymentOptionsPage() {
       id: "razorpay",
       name: "Razorpay",
       description: "Pay using UPI, Cards, Wallets and more.",
-      icon: <Zap className="w-6 h-6 text-indigo-500" />,
+      icon: <img src="https://play-lh.googleusercontent.com/2BQu8Y7Ah9Gh9CZvmaMSYIcZvdO4KfdJ26EZ1WGyaOG_xxeDxNn-AZYxOtQJvyQQPFY=w600-h300-pc0xffffff-pd" alt="" />,
       available: true,
-    },
-    {
-      id: "phonepe",
-      name: "PhonePe",
-      description: "Pay via PhonePe UPI. (Coming soon)",
-      icon: <IndianRupee className="w-6 h-6 text-violet-500" />,
-      available: false,
     },
   ];
 

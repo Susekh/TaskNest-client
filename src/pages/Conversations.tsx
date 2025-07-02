@@ -266,7 +266,7 @@ const Conversations = () => {
           {file && (
             <div className="flex items-center justify-between mb-2 bg-neutral-100 dark:bg-neutral-700 p-2 rounded">
               <div className="flex items-center gap-2">
-                <Paperclip size={16} className="text-teal-500" />
+                <Paperclip size={16} className="text-blue-500" />
                 <span className="text-sm truncate max-w-xs">{file.name}</span>
                 {uploadingFile && (
                   <Loader2 size={16} className="animate-spin ml-2" />
@@ -275,7 +275,7 @@ const Conversations = () => {
               <button
                 type="button"
                 onClick={handleRemoveFile}
-                className="text-teal-500 hover:text-teal-700"
+                className="text-blue-500 hover:text-blue-700"
               >
                 <X size={16} />
               </button>
@@ -310,7 +310,7 @@ const Conversations = () => {
             />
             <button
               type="submit"
-              className="bg-teal-500 hover:bg-teal-600 text-white px-4 rounded flex items-center justify-center min-w-[80px]"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 rounded flex items-center justify-center min-w-[80px]"
               disabled={isSending || (!message.trim() && !file)}
             >
               {isSending ? (

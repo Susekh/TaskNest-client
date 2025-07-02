@@ -1,12 +1,19 @@
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { Button } from "../../ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from "../../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+} from "../../ui/dialog";
 import { Label } from "@radix-ui/react-label";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import callApiPost from "@/utils/callApiPost";
 import conf from "@/conf/conf";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "@/components/ui/DatePicker";
+import toast from "react-hot-toast";
 
 type Props = {
   className: string;
@@ -14,16 +21,25 @@ type Props = {
   disabled: boolean;
 };
 
-
 function CreateSprintModal({ className, projectId, disabled }: Props) {
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (startDate && endDate && endDate < startDate) {
+      toast.error("End date cannot come before start date");
+      setEndDate(null);
+    }
+  }, [startDate, endDate]);
 
   const createSprint = async (e: FormEvent) => {
     e.preventDefault();
     if (!startDate || !endDate) return;
+
+    setLoading(true);
 
     try {
       const res = await callApiPost(`${conf.backendUrl}/create/sprint`, {
@@ -33,13 +49,18 @@ function CreateSprintModal({ className, projectId, disabled }: Props) {
         projectId,
       });
 
-      navigate(`sprints/${res?.data?.sprint?.id}`);
+      if (res?.data.status === "success") {
+        navigate(`./sprints/${res?.data?.sprint?.id}`);
+      }
 
       setName("");
       setStartDate(null);
       setEndDate(null);
     } catch (error) {
       console.error("Error creating sprint:", error);
+      toast.error("Error creating sprint");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,11 +104,11 @@ function CreateSprintModal({ className, projectId, disabled }: Props) {
           </div>
 
           <div className="flex items-center justify-center gap-4">
-             <Label
-              htmlFor="name"
+            <Label
+              htmlFor="startDate"
               className="text-right text-sm font-medium text-gray-700 dark:text-gray-300"
             >
-              Name
+              Start Date
             </Label>
             <DatePicker
               id="startDate"
@@ -97,11 +118,11 @@ function CreateSprintModal({ className, projectId, disabled }: Props) {
           </div>
 
           <div className="flex items-center justify-center gap-4">
-             <Label
-              htmlFor="name"
+            <Label
+              htmlFor="endDate"
               className="text-right text-sm font-medium text-gray-700 dark:text-gray-300"
             >
-              Name
+              End Date
             </Label>
             <DatePicker
               id="endDate"
@@ -113,9 +134,10 @@ function CreateSprintModal({ className, projectId, disabled }: Props) {
           <DialogFooter className="pt-4">
             <Button
               type="submit"
+              disabled={loading}
               className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600 text-white font-semibold"
             >
-              Add Sprint
+              {loading ? "Creating..." : "Add Sprint"}
             </Button>
           </DialogFooter>
         </form>

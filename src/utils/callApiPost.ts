@@ -15,6 +15,7 @@ type ApiPostType = {
   projectId?: string;
   user?: User;
   sprint?: Sprint;
+  msg? : string;
 };
 
 const callApiPost = async (url: string, body: any) => {
