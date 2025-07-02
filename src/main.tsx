@@ -27,6 +27,7 @@ import PaymentOptionsPage from "./pages/UpgradeProject.tsx";
 import RazorPage from "./pages/RazorPage.tsx";
 import FeaturesPage from "./pages/Features.tsx";
 import PricingSection from "./pages/Pricing.tsx";
+import ContactPage from "./pages/ContactPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,14 @@ const router = createBrowserRouter([
             <Dashboard />
           </ProtectRoutes>
         ),
+      },
+      {
+        path : "/contact",
+        element : (
+          <ProtectRoutes isProtected={false}>
+            <ContactPage />
+          </ProtectRoutes>
+        )
       },
       {
         path: "/auth/forgot-password",

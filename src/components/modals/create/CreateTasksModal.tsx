@@ -10,7 +10,13 @@ import {
 } from "../../ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "../../ui/input";
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import callApiPost from "@/utils/callApiPost";
 import conf from "@/conf/conf";
 import toast from "react-hot-toast";
@@ -45,6 +51,24 @@ function CreateTasksModal({
   const [content, setContent] = useState<string>("");
   const [deadline, setDeadline] = useState<Date | undefined>();
   const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const isDark = document.documentElement.classList.contains("dark");
+    setTheme(isDark ? "dark" : "light");
+
+    const observer = new MutationObserver(() => {
+      const dark = document.documentElement.classList.contains("dark");
+      setTheme(dark ? "dark" : "light");
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   const createProject = async (e: FormEvent) => {
     e.preventDefault();
@@ -119,7 +143,10 @@ function CreateTasksModal({
             <Label htmlFor="content" className="text-right pt-2">
               Content
             </Label>
-            <div className="col-span-3">
+            <div
+              className="col-span-3"
+              data-color-mode={theme === "dark" ? "dark" : "light"}
+            >
               <MDEditor
                 value={content}
                 onChange={(val) => setContent(val || "")}

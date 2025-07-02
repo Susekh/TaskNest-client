@@ -26,7 +26,6 @@ const capabilities: {
   title: string;
   description: string;
   icon: LucideIcon;
-  color: string;
 }[] = [
   {
     id: 1,
@@ -34,15 +33,13 @@ const capabilities: {
     description:
       "Get your team up and running in minutes. Pre-built templates, smart defaults, and guided onboarding.",
     icon: Zap,
-    color: "emerald",
   },
   {
     id: 2,
     title: "Sprint Management",
     description:
       "Plan, track, and deliver sprints efficiently. Built-in velocity tracking and burndown charts.",
-    icon: Target,
-    color: "blue",
+    icon: Target, 
   },
   {
     id: 3,
@@ -50,7 +47,6 @@ const capabilities: {
     description:
       "Assign tasks with clear ownership, priorities, and due dates.",
     icon: Users,
-    color: "purple",
   },
   {
     id: 4,
@@ -58,7 +54,6 @@ const capabilities: {
     description:
       "Visualize workflow with drag-and-drop boards. Customize columns and automate transitions.",
     icon: Layers,
-    color: "orange",
   },
   {
     id: 5,
@@ -66,7 +61,6 @@ const capabilities: {
     description:
       "Stay on top of deadlines with smart notifications, calendar integration, and progress tracking.",
     icon: Calendar,
-    color: "red",
   },
   {
     id: 6,
@@ -74,7 +68,6 @@ const capabilities: {
     description:
       "Track team productivity, identify bottlenecks, and optimize workflow.",
     icon: BarChart3,
-    color: "indigo",
   },
 ];
 
@@ -186,7 +179,7 @@ export default function Home() {
                   className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] p-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition duration-300"
                 >
                   <div
-                    className={`w-12 h-12 mb-4 flex items-center justify-center rounded-xl bg-${c.color}-600 dark:bg-${c.color}-500`}
+                    className={`w-12 h-12 mb-4 flex items-center justify-center rounded-xl`}
                   >
                     <c.icon className="w-6 h-6 text-white" />
                   </div>

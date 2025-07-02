@@ -46,6 +46,22 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
     null
   );
   const navigate = useNavigate();
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const isDark = root.classList.contains("dark");
+    setTheme(isDark ? "dark" : "light");
+
+    const observer = new MutationObserver(() => {
+      setTheme(
+        document.documentElement.classList.contains("dark") ? "dark" : "light"
+      );
+    });
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -283,9 +299,12 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
               <h2 className="text-base font-semibold text-neutral-800 dark:text-neutral-200 flex items-center gap-1">
                 📝 <span>Description</span>
               </h2>
-              <div className="mt-2 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-gray-950 shadow-sm">
-                <div className="p-2 prose prose-sm dark:prose-invert max-w-none">
-                  <MDEditor.Markdown source={task.content} />
+              <div className="mt-2  rounded-xl border border-neutral-200 dark:border-neutral-700 shadow-sm">
+                <div
+                  className="prose md:min-h-28 prose-sm dark:prose-invert max-w-none"
+                  data-color-mode={theme === "dark" ? "dark" : "light"}
+                >
+                  <MDEditor.Markdown  style={{ minHeight: "200px", padding: "1rem", borderRadius : "12px"}} source={task.content} />
                 </div>
               </div>
             </section>
@@ -310,10 +329,7 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
             <div className="flex items-center justify-between">
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="justify-start gap-2"
-                  >
+                  <Button variant="outline" className="justify-start gap-2">
                     <Users size={16} />
                     <span>Members ({taskMembers.length})</span>
                   </Button>

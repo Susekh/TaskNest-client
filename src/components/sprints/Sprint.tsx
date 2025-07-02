@@ -65,8 +65,8 @@ function Sprint() {
   if (error)
     return (
       <div className="flex items-center justify-center h-full w-full p-8">
-        <div className="bg-white dark:bg-neutral-900 border border-teal-500/20 rounded-lg p-6 text-center max-w-md shadow-md">
-          <AlertCircle className="h-12 w-12 text-teal-500 mx-auto mb-4" />
+        <div className="bg-white dark:bg-neutral-900 border border-slate-500/20 rounded-lg p-6 text-center max-w-md shadow-md">
+          <AlertCircle className="h-12 w-12 text-slate-500 mx-auto mb-4" />
           <h2 className="text-xl font-medium text-neutral-800 dark:text-white mb-2">
             Something went wrong
           </h2>
@@ -101,7 +101,7 @@ function Sprint() {
                 <div className="bg-gray-100 dark:bg-neutral-800/50 border border-gray-200 dark:border-neutral-700 rounded-lg px-3 py-2 flex items-center">
                   <Calendar
                     size={16}
-                    className="text-teal-600 dark:text-teal-500 mr-2"
+                    className="text-slate-600 dark:text-slate-500 mr-2"
                   />
                   <span className="text-sm">
                     {new Date(sprint.startDate).toLocaleDateString()} -{" "}
@@ -112,7 +112,7 @@ function Sprint() {
                 <div className="bg-gray-100 dark:bg-neutral-800/50 border border-gray-200 dark:border-neutral-700 rounded-lg px-3 py-2 flex items-center">
                   <Clock
                     size={16}
-                    className="text-teal-600 dark:text-teal-500 mr-2"
+                    className="text-slate-600 dark:text-slate-500 mr-2"
                   />
                   {member?.role === "ADMIN" || member?.role === "MODERATOR" ? (
                     <select
@@ -153,7 +153,7 @@ function Sprint() {
                     <span
                       className={`text-sm px-2 py-0.5 rounded ${
                         sprint.status === "ACTIVE"
-                          ? "bg-teal-100 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400"
+                          ? "bg-slate-100 dark:bg-slate-500/20 text-slate-600 dark:text-slate-400"
                           : sprint.status === "COMPLETED"
                           ? "bg-green-100 dark:bg-green-500/20 text-green-600 dark:text-green-400"
                           : "bg-gray-200 dark:bg-neutral-700/50 text-gray-700 dark:text-neutral-300"
@@ -182,7 +182,7 @@ function Sprint() {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 <div className="flex items-center mb-4 sm:mb-0">
                   <Layers
-                    className="text-teal-600 dark:text-teal-500 mr-2"
+                    className="text-slate-600 dark:text-slate-500 mr-2"
                     size={20}
                   />
                   <h2 className="text-xl font-semibold">Sprint Columns</h2>
@@ -191,7 +191,7 @@ function Sprint() {
                 {member?.role === "ADMIN" || member?.role === "MODERATOR" ? (
                   <Button
                     onClick={createColumn}
-                    className="flex items-center justify-center bg-teal-600 hover:bg-teal-700 transition-colors px-4 py-2 rounded-lg text-white font-medium shadow-sm"
+                    className="flex items-center justify-center bg-slate-600 hover:bg-slate-700 transition-colors px-4 py-2 rounded-lg text-white font-medium shadow-sm"
                   >
                     <Plus size={18} className="mr-2" />
                     Add Column

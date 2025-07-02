@@ -9,7 +9,6 @@ const ChatBubble = ({
   align = "start",
   name,
   time,
-  role,
   id,
   content,
   status,
