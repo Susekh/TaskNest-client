@@ -65,10 +65,9 @@ const TaskCard = ({
         handleDragStart(e, taskId, taskName, index, member?.role)
       }
       onDragEnd={handleDragEnd}
-      className={`relative mb-3 p-3 rounded-lg border shadow-sm hover:shadow-md transition-all
-  bg-card text-card-foreground  dark:bg-neutral-800 dark:shadow-neutral-900/30
+      className={`relative mb-3 h-28 p-3 rounded-lg border shadow-sm hover:shadow-md transition-all
+  bg-card text-card-foreground  dark:bg-zinc-900 dark:shadow-neutral-900/30
   ${isExpired ? "border-l-4 border-red-500 pl-2" : "dark:border-neutral-700"}`}
-
     >
       {/* Delete Button */}
       {(member?.role === "ADMIN" || member?.role === "MODERATOR") && (
@@ -77,7 +76,7 @@ const TaskCard = ({
           title="Delete task"
         >
           <DeleteTaskModal
-            className="p-0 bg-white hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-800 text-neutral-400 hover:text-red-500 cursor-pointer"
+            className="p-0 bg-transparent hover:bg-transparent text-neutral-400 hover:text-red-500 cursor-pointer"
             taskId={taskId}
             setColumns={setColumns}
             columns={columns}
@@ -92,7 +91,7 @@ const TaskCard = ({
           </h3>
         </div>
 
-        <div className="flex flex-wrap gap-2 text-xs mt-2 items-center">
+        <div className="space-y-4 text-xs mt-2">
           <div className="flex items-center text-neutral-500 dark:text-neutral-400">
             <Calendar className="h-3 w-3 mr-1" />
             <span>{format(new Date(taskDeadline), "MMM d, yyyy h:mm a")}</span>

@@ -133,13 +133,13 @@ function SignInForm({setIsSignIn} : props) {
               <FormControl>
                 <Input type={showPassword? "text" : "password"} placeholder="password" {...field} />
               </FormControl>
-              <button type="button" onClick={() => navigate('/auth/forgot-password')} className="hover:underline text-sm block ml-auto text-teal-600 hover:text-blue-800 duration-100">Forgot Password?</button>
+              <button type="button" onClick={() => navigate('/auth/forgot-password')} className="hover:underline text-sm block ml-auto text-gray-600 hover:text-blue-800 duration-100">Forgot Password?</button>
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="text-gray-500 absolute top-8 right-3">{showPassword ? <EyeOff/> : <Eye/>}</button>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button className="w-full bg-teal-800 text-white dark:hover:bg-teal-900" disabled={isLoading} type="submit">Login</Button>
+        <Button className="w-full bg-gray-800 text-white dark:hover:bg-gray-900" disabled={isLoading} type="submit">Login</Button>
         <div className="flex gap-2 justify-center font-light text-sm border-t-2 border-gray-300 p-4">
           <p>Don’t have an account?</p>
           <button type="button" className="font-semibold text-gray-500 hover:underline" onClick={() => setIsSignIn(false)}>Sign up</button>

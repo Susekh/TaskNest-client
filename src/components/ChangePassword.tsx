@@ -136,7 +136,7 @@ function ChangePassword() {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem className="relative">
-              <FormLabel>Confrim Password</FormLabel>
+              <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 <Input type={showConfirmPassword? "text" : "password"} placeholder="confirm Password" {...field} />
               </FormControl>

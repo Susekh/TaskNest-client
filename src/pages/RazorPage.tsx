@@ -15,7 +15,7 @@ interface RazorpayOrderResponse {
   amount: number;
   currency: string;
   orderID: string;
-  data : any;
+  data: any;
   notes: {
     name: string;
     emailId: string;
@@ -34,9 +34,12 @@ function RazorPage() {
       }
 
       try {
-        const res = await callApiPost(`${conf.backendUrl}/payment/razor/create`, {
-          projectId
-        }) as RazorpayOrderResponse | null;
+        const res = (await callApiPost(
+          `${conf.backendUrl}/payment/razor/create`,
+          {
+            projectId,
+          }
+        )) as RazorpayOrderResponse | null;
 
         const order = res?.data;
 
@@ -46,7 +49,8 @@ function RazorPage() {
           currency: order.currency,
           name: "TaskNet",
           description: "Project Upgrade",
-          image: "https://task-net.s3.eu-north-1.amazonaws.com/1751279529406-logo.png",
+          image:
+            "https://task-net.s3.eu-north-1.amazonaws.com/1751279529406-logo.png",
           order_id: order.orderID,
           prefill: {
             name: order.notes.name,
@@ -60,7 +64,7 @@ function RazorPage() {
           theme: {
             color: "#1f2937",
           },
-          handler: function (response : any) {
+          handler: function (response: any) {
             console.log("Payment Success:", response);
             navigate(`/projects/${projectId}`);
           },
@@ -77,7 +81,7 @@ function RazorPage() {
         razorpay.open();
       } catch (err) {
         console.error("Payment error:", err);
-        
+
         toast.error("Error in payment.");
         navigate(`/projects/${projectId}`);
       }
@@ -87,10 +91,13 @@ function RazorPage() {
   }, [projectId, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-900 text-white">
-      <div className="text-center animate-pulse">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-900 text-white relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-full bg-white/30 animate-pulse" />
+      <div className="text-center z-10 animate-pulse">
         <h1 className="text-2xl font-semibold mb-2">Processing Payment...</h1>
-        <p className="text-sm text-gray-400">Please do not refresh or close this window.</p>
+        <p className="text-sm text-gray-400">
+          Please do not refresh or close this window.
+        </p>
       </div>
     </div>
   );
