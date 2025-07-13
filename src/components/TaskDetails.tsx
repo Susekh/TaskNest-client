@@ -426,7 +426,7 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
           <div className="flex flex-col overflow-y-auto gap-4 flex-1 pr-1 mt-2">
             {(messages?.length ?? 0) > 0 ? (
               <>
-                {messages?.map((msg, idx) => (
+                {messages?.map((msg) => (
                   <ChatBubble
                     key={msg.id}
                     id={msg.id}
