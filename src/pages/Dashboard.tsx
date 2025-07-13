@@ -147,7 +147,7 @@ export default function Dashboard() {
                             );
                             if (!filtered?.length) return null;
                             return (
-                              <div key={mi} className="min-w-[280px] space-y-3">
+                              <div key={mi} className="min-w-[180px] space-y-3">
                                 <h3 className="text-sm font-medium text-[#60748a] dark:text-neutral-400 truncate">
                                   {m.project?.name}
                                 </h3>

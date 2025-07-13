@@ -442,7 +442,7 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
                     fileUrl={msg?.fileUrl}
                     onDelete={deleteMessage}
                     onUpdate={updateMessage}
-                    status={idx % 2 === 0 ? "Delivered" : "Seen"}
+                    // status={idx % 2 === 0 ? "Delivered" : "Seen"}
                   />
                 ))}
                 <div ref={messagesEndRef} />
@@ -493,7 +493,7 @@ const TaskDetails = ({ task }: TaskDetailsProps) => {
                   ref={fileInputRef}
                   onChange={handleFileChange}
                   className="hidden"
-                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.mp3,.mp4"
                   disabled={isSending}
                 />
               </button>

@@ -14,7 +14,6 @@ import {
 import { Link } from "react-router-dom";
 
 const featureList = [
-  { id: 1, content: "Setup in Under 60 Seconds", icon: Zap },
   { id: 2, content: "Smart Sprint Planning", icon: Target },
   { id: 3, content: "Dynamic Kanban Boards", icon: Layers },
   { id: 4, content: "Deadline Tracking", icon: Clock },
