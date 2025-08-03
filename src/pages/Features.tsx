@@ -102,7 +102,7 @@ const workflowSteps = [
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-black dark:text-white px-6 py-1">
+    <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-black dark:text-white px-6 py-12">
       <div className="max-w-6xl mx-auto space-y-20">
 
         {/* Key Features */}
