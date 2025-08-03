@@ -102,7 +102,7 @@ const workflowSteps = [
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-[#121416] font-sans text-black dark:text-white px-6 py-12">
+    <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-black dark:text-white px-6 py-1">
       <div className="max-w-6xl mx-auto space-y-20">
 
         {/* Key Features */}
@@ -112,7 +112,7 @@ export default function FeaturesPage() {
             {featureList.map((f) => (
               <div
                 key={f.id}
-                className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] p-6 rounded-lg hover:scale-105 transform transition duration-300"
+                className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] p-6 rounded-lg hover:scale-105 transform transition duration-100"
               >
                 <f.icon className="w-6 h-6 mb-4 text-gray-800 dark:text-white" />
                 <p className="text-lg text-black dark:text-white">{f.content}</p>
@@ -128,7 +128,7 @@ export default function FeaturesPage() {
             {workflowSteps.map((ws) => (
               <div
                 key={ws.step}
-                className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] rounded-xl p-6 text-center hover:scale-105 transition-transform duration-300 shadow hover:shadow-xl"
+                className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] rounded-xl p-6 text-center hover:scale-105 transition-transform duration-100 shadow hover:shadow-xl"
               >
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-300 dark:bg-[#2c3035] flex items-center justify-center">
                   <ws.icon className="w-8 h-8 text-gray-800 dark:text-white" />
@@ -154,7 +154,7 @@ export default function FeaturesPage() {
             {capabilities.map((c) => (
               <div
                 key={c.id}
-                className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] p-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition duration-300"
+                className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] p-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition duration-100"
               >
                 <div
                   className={`w-12 h-12 mb-4 flex items-center justify-center rounded-xl bg-${c.color}-600 dark:bg-${c.color}-500`}
