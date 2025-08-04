@@ -135,7 +135,7 @@ function CreateSprintModal({ className, projectId, disabled }: Props) {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600 text-white font-semibold"
+              className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-semibold"
             >
               {loading ? "Creating..." : "Add Sprint"}
             </Button>

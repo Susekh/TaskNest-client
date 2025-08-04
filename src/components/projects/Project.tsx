@@ -3,15 +3,8 @@ import useApiPost from "@/utils/hooks/useApiPost";
 import { useNavigate, useParams } from "react-router-dom";
 import ContentShimmer from "../loaders/shimmers/ContentShimmer";
 import { Button } from "../ui/button";
-import CreateSprintModal from "../modals/create/CreateSprintModal";
-import {
-  Link,
-  Users,
-  FolderOpen,
-  ChevronDown,
-  Shield,
-  Trash2,
-} from "lucide-react";
+
+import { Link, FolderOpen } from "lucide-react";
 import toast from "react-hot-toast";
 import callApiPost from "@/utils/callApiPost";
 import { MouseEvent, useEffect, useState } from "react";
@@ -19,44 +12,15 @@ import { format, isAfter, isBefore, parseISO } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import DeleteProjectModal from "../modals/delete/DeleteProjectModal";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+
 import { AxiosResponse } from "axios";
 import { setUserMember } from "@/store/MemberSlice";
-import { Member } from "@/types/types";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "../ui/alert-dialog";
-import { BiExit } from "react-icons/bi";
+import { Member, Sprint } from "@/types/types";
+import ProjectContent from "./ProjectContent";
 
 interface ApiDeleteSprintRes {
   message: string;
   status: string;
-}
-
-interface Sprint {
-  id: string;
-  name: string;
-  status: string;
-  startDate: string;
-  endDate: string;
 }
 
 function Project() {
@@ -174,23 +138,6 @@ function Project() {
     }
   };
 
-  // async function handleDeleteProject(projectId: string) {
-  //   try {
-  //     const res = await callApiPost(
-  //       `${conf.backendUrl}/delete/project/delete-project`,
-  //       { projectId }
-  //     );
-  //     if (res?.status === 200) {
-  //       toast.success("Project deleted");
-  //       navigate("/dashboard");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Unable to delete the project");
-  //     console.error("Error in deleting the project ::", error);
-
-  //   }
-  // }
-
   async function handleChangeRole(
     memberId: string,
     newRole: "ADMIN" | "MODERATOR" | "CONTRIBUTER"
@@ -221,7 +168,7 @@ function Project() {
     navigate("/conversations/" + roomId);
   }
 
-  async function handleRemoveMember(e : MouseEvent, memberId: string) {
+  async function handleRemoveMember(e: MouseEvent, memberId: string) {
     e.stopPropagation();
     try {
       const res = await callApiPost(
@@ -301,7 +248,7 @@ function Project() {
               {/* Invite Button */}
               <Button
                 onClick={() => copyInviteLinkToClipboard(project.inviteCode)}
-                className="flex items-center gap-1.5 px-3 py-1 bg-gray-800 text-white rounded-md shadow hover:shadow-md hover:bg-gray-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="flex items-center gap-1.5 px-3 py-1 bg-gray-400 dark:bg-gray-800 dark:text-white text-black rounded-md shadow hover:shadow-md hover:bg-gray-500 dark:hover:bg-gray-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
                 aria-label="Copy invite link"
               >
                 <Link size={14} className="text-indigo-400" />
@@ -337,323 +284,20 @@ function Project() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 border border-neutral-200 dark:border-neutral-800">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold flex items-center text-neutral-600 dark:text-neutral-500">
-                  <Users size={20} className="mr-2" />
-                  Team Members
-                </h2>
-                <Button
-                  onClick={toggleMembersList}
-                  variant="outline"
-                  className="text-sm border border-neutral-200 dark:border-neutral-700 text-neutral-600 dark:text-neutral-500 hover:bg-neutral-50 dark:hover:bg-neutral-950 bg-white dark:bg-neutral-900"
-                >
-                  {showMembers ? "Hide" : "Show"} All
-                </Button>
-              </div>
-
-              {showMembers && (
-                <div className="space-y-3 mt-4">
-                  {members && members.length > 0 ? (
-                    members.map((m, index) => (
-                      <div
-                        key={index}
-                        onClick={() => redirectToConversations(m.id)}
-                        className="flex items-center gap-3 p-3 rounded-md bg-neutral-50 dark:bg-neutral-950 hover:bg-neutral-100 dark:hover:bg-black transition-colors cursor-pointer"
-                      >
-                        <img
-                          src={
-                            m.user?.imgUrl ||
-                            `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                              m.user?.name || "User"
-                            )}&background=B91C1C&color=ffffff`
-                          }
-                          alt={m.user?.name || "User"}
-                          className="w-10 h-10 rounded-full object-cover border-2 border-slate-500 dark:border-slate-700 flex-shrink-0"
-                        />
-                        <div className="bg-neutral-100 dark:bg-neutral-900 px-3 py-2 rounded-md flex flex-col justify-center min-w-[160px] max-w-[160px]">
-                          <h3
-                            className="font-semibold text-sm text-neutral-900 dark:text-neutral-100 uppercase truncate"
-                            title={m.user?.name || "Unknown"}
-                            style={{ lineHeight: 1 }}
-                          >
-                            {m.user?.name || "Unknown"}
-                          </h3>
-                          <p
-                            className="text-xs text-neutral-500 dark:text-neutral-400 truncate"
-                            title={`@${m.user?.username || "username"}`}
-                          >
-                            @{m.user?.username || "username"}
-                          </p>
-                        </div>
-
-                        <div className="ml-auto">
-                          {member?.role === "ADMIN" ? (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  className="flex items-center gap-1 text-sm px-2 py-1 bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 rounded w-28 h-8"
-                                  onClick={(e) => e.stopPropagation()}
-                                  aria-label={`${m.role || "Member"} options`}
-                                >
-                                  {m.role || "Member"}
-                                  <ChevronDown className="w-4 h-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent
-                                className="w-56"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                {m.role !== "ADMIN" && m.id !== member.id && (
-                                  <DropdownMenuItem
-                                    onClick={() =>
-                                      handleChangeRole(m.id, "ADMIN")
-                                    }
-                                  >
-                                    <Shield className="w-4 h-4 mr-2" />
-                                    Make Admin
-                                  </DropdownMenuItem>
-                                )}
-                                {m.role !== "MODERATOR" &&
-                                  m.id !== member.id && (
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        handleChangeRole(m.id, "MODERATOR")
-                                      }
-                                    >
-                                      <Shield className="w-4 h-4 mr-2" />
-                                      Make Moderator
-                                    </DropdownMenuItem>
-                                  )}
-                                {m.role !== "CONTRIBUTER" &&
-                                  m.id !== member.id && (
-                                    <DropdownMenuItem
-                                      onClick={() =>
-                                        handleChangeRole(m.id, "CONTRIBUTER")
-                                      }
-                                    >
-                                      <Shield className="w-4 h-4 mr-2" />
-                                      Make Contributor
-                                    </DropdownMenuItem>
-                                  )}
-                                <DropdownMenuItem
-                                  onClick={(e) => handleRemoveMember(e, m.id)}
-                                  className="text-red-600 focus:bg-slate-100 dark:focus:bg-red-900"
-                                >
-                                  {m.id === member.id ? (
-                                    <span className="flex items-center text-red-500">
-                                      <BiExit className="w-4 h-4 mr-2" />
-                                      Leave the project
-                                    </span>
-                                  ) : (
-                                    <span className="flex items-center text-red-500">
-                                      <Trash2 className="w-4 h-4 mr-2" />
-                                      Remove Member
-                                    </span>
-                                  )}
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          ) : (
-                            <div className="flex items-center gap-1 text-xs px-3 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 w-28 h-8 justify-center select-none cursor-default">
-                              {m.id === member?.id ? (
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      className="flex items-center justify-center gap-1 text-xs px-3 py-1 dark:bg-gray-800 bg-transparent rounded w-full h-full"
-                                      onClick={(e) => e.stopPropagation()}
-                                      aria-label={`${
-                                        m.role || "Member"
-                                      } options`}
-                                    >
-                                      {m.role || "Member"}
-                                      <ChevronDown className="w-3 h-3" />
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent className="text-sm">
-                                    <DropdownMenuItem
-                                      onClick={(e) => handleRemoveMember(e, m.id)}
-                                      className="text-red-600 focus:bg-gray-200 dark:focus:bg-red-900"
-                                      role="menuitem"
-                                      tabIndex={-1}
-                                    >
-                                      <p className="flex items-center text-red-500">
-                                        <BiExit className="w-4 h-4 mr-2" />
-                                        Leave the project
-                                      </p>
-                                    </DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              ) : (
-                                <span aria-label={m.role || "Member"}>
-                                  {m.role || "Member"}
-                                </span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-6">
-                      <p className="text-neutral-500 dark:text-neutral-400 mb-3">
-                        No team members yet
-                      </p>
-                      <Button className="bg-slate-600 hover:bg-slate-700 text-white dark:bg-slate-700 dark:hover:bg-slate-800">
-                        Add Members
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {!showMembers && members && members.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {members.slice(0, 5).map((member, idx) => (
-                    <img
-                      key={idx}
-                      src={
-                        member.user?.imgUrl ||
-                        `https://ui-avatars.com/api/?name=${
-                          member.user?.name || "User"
-                        }&background=B91C1C&color=ffffff`
-                      }
-                      alt={member.user?.name || "User"}
-                      title={member.user?.name || "User"}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-slate-500 dark:border-slate-700"
-                    />
-                  ))}
-                  {members.length > 5 && (
-                    <div className="w-8 h-8 rounded-full bg-slate-600 dark:bg-slate-700 flex items-center justify-center text-xs font-medium text-white">
-                      +{members.length - 5}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-md p-6 border border-neutral-200 dark:border-neutral-800">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold text-neutral-600 dark:text-neutral-400">
-                  Sprints
-                </h2>
-                {member?.role === "CONTRIBUTER" ? (
-                  ""
-                ) : (
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div>
-                          <CreateSprintModal
-                            disabled={!project.isPro && sprints.length >= 5}
-                            className="bg-slate-600 hover:bg-slate-700 text-white hover:text-white dark:bg-slate-700 dark:hover:bg-slate-800 shadow-md"
-                            projectId={project.id}
-                          />
-                        </div>
-                      </TooltipTrigger>
-                      {sprints.length >= 5 && (
-                        <TooltipContent side="top">
-                          <p className="text-xs">
-                            Premium required to create more than 5 sprints.
-                          </p>
-                        </TooltipContent>
-                      )}
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
-              </div>
-
-              {sprints.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {sprints.map((sprint) => (
-                    <div
-                      key={sprint.id}
-                      className="relative bg-white dark:bg-neutral-900 rounded-xl shadow-md border border-neutral-200 dark:border-neutral-700 overflow-hidden transition hover:shadow-lg"
-                    >
-                      {/* Status Badge */}
-                      <div
-                        className={`absolute top-3 right-3 text-xs px-2 py-0.5 rounded-full font-semibold ${getSprintStatusColor(
-                          sprint.startDate,
-                          sprint.endDate
-                        )}`}
-                      >
-                        {sprint.status}
-                      </div>
-
-                      {/* Main Content */}
-                      <div
-                        className="p-4 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
-                        onClick={() => navigate(`sprints/${sprint.id}`)}
-                      >
-                        <h3 className="font-semibold text-lg text-neutral-800 dark:text-white mb-1">
-                          {sprint.name}
-                        </h3>
-                        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                          {formatDate(sprint.startDate)} -{" "}
-                          {formatDate(sprint.endDate)}
-                        </p>
-                      </div>
-
-                      {/* Footer */}
-                      <div className="border-t border-neutral-200 dark:border-neutral-700 px-4 py-2 flex items-center justify-between">
-                        {member?.role !== "CONTRIBUTER" ? (
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="text-sm hover:text-red-600 dark:hover:text-red-500"
-                              >
-                                <Trash2 size={16} />
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Are you sure?
-                                </AlertDialogTitle>
-                              </AlertDialogHeader>
-                              <div className="text-sm text-neutral-600 dark:text-neutral-400">
-                                This action cannot be undone. Do you really want
-                                to delete this sprint?
-                              </div>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => deleteSprint(sprint.id)}
-                                >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        ) : (
-                          <div />
-                        )}
-
-                        <span className="text-xs text-neutral-400 dark:text-neutral-500">
-                          #{sprint.id.slice(0, 6)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-6">
-                  <p className="text-neutral-500 dark:text-neutral-400">
-                    No sprints available
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <ProjectContent
+          toggleMembersList={toggleMembersList}
+          showMembers={showMembers}
+          member={member}
+          members={members}
+          redirectToConversations={redirectToConversations}
+          formatDate={formatDate}
+          sprints={sprints}
+          getSprintStatusColor={getSprintStatusColor}
+          handleChangeRole={handleChangeRole}
+          handleRemoveMember={handleRemoveMember}
+          project={project}
+          deleteSprint={deleteSprint}
+        />
       </div>
     </section>
   );

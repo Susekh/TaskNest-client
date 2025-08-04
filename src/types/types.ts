@@ -43,6 +43,7 @@ export type MemberRole = "ADMIN" | "MODERATOR" | "CONTRIBUTER";
   export interface Project {
     id: string;
     name: string;
+    isPro? : boolean;
     imageUrl: string;
     inviteCode?: string;
     userId: string;
