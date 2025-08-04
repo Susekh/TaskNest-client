@@ -141,7 +141,7 @@ function EditProfileForm() {
           )}
         />
 
-        <Button className="w-full bg-teal-600 text-white hover:bg-teal-800 duration-200 dark:hover:bg-teal-800 " disabled={isLoading} type="submit">Save</Button>
+        <Button className="w-full bg-blue-600 text-white hover:bg-blue-800 duration-200 dark:hover:bg-blue-800 " disabled={isLoading} type="submit">Save</Button>
   
       </form>
     </Form>

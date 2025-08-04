@@ -12,7 +12,7 @@ function EditProfile() {
     <div className='border-2 dark:border-none shadow-lg rounded-lg pt-8 pb-8 pl-12 pr-12 lg:w-96 md:w-3/5 w-10/12 bg-white dark:bg-neutral-900'>
         {isChangePassword ? <ChangePassword /> : <EditProfileForm/>}
         <div className=" border-t-2 pt-4 mt-4">
-            <Button onClick={() => setIsChangePassword(!isChangePassword)} className="w-full bg-teal-900 text-white dark:hover:bg-neutral-800 " type="button">{isChangePassword ? 'Edit details' : 'Change password'}</Button>
+            <Button onClick={() => setIsChangePassword(!isChangePassword)} className="w-full bg-blue-900 text-white dark:hover:bg-neutral-800 " type="button">{isChangePassword ? 'Edit details' : 'Change password'}</Button>
         </div>
     </div>
     </div>

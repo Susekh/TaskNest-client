@@ -37,7 +37,7 @@ export default function Dashboard() {
             </section>
 
             <section className="mb-6 flex justify-end">
-              <CreateProjectModal className="px-4 py-2 rounded-md bg-gray-800 hover:bg-blue-950 text-white font-semibold transition-colors" />
+              <CreateProjectModal className="px-4 py-2 rounded-md bg-gray-800 hover:bg-blue-950 text-white hover:text-white font-semibold transition-colors" />
             </section>
 
             <section className="mb-10 relative">

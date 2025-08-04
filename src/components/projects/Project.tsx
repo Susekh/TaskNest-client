@@ -552,7 +552,7 @@ function Project() {
                         <div>
                           <CreateSprintModal
                             disabled={!project.isPro && sprints.length >= 5}
-                            className="bg-slate-600 hover:bg-slate-700 text-white dark:bg-slate-700 dark:hover:bg-slate-800 shadow-md"
+                            className="bg-slate-600 hover:bg-slate-700 text-white hover:text-white dark:bg-slate-700 dark:hover:bg-slate-800 shadow-md"
                             projectId={project.id}
                           />
                         </div>
