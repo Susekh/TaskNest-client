@@ -8,7 +8,7 @@ import callApiPost from "@/utils/callApiPost";
 import conf from "@/conf/conf";
 import { login } from "@/store/userSlice";
 import { AxiosResponse } from "axios";
-
+import Waves from "@/components/ui/Waves";
 
 type UploadResponse = {
   imgUrl: string;
@@ -90,7 +90,7 @@ function Profile() {
       const updatedUser = {
         ...user,
         imgUrl: uploadedImageUrl,
-        email: user.email ?? "", 
+        email: user.email ?? "",
       };
 
       dispatch(login(updatedUser));
@@ -106,7 +106,20 @@ function Profile() {
   return (
     <div className="w-full min-h-screen bg-neutral-50 dark:bg-neutral-900 flex flex-col">
       {/* Header background */}
-      <div className="w-full h-32 md:h-40 bg-gradient-to-r from-teal-500 to-emerald-200"></div>
+      <Waves
+       className="h-32 md:h-40"
+        lineColor="#fff"
+        backgroundColor="rgba(255, 255, 255, 0.2)"
+        waveSpeedX={0.02}
+        waveSpeedY={0.01}
+        waveAmpX={40}
+        waveAmpY={20}
+        friction={0.9}
+        tension={0.01}
+        maxCursorMove={120}
+        xGap={12}
+        yGap={36}
+      />
 
       {/* Main content */}
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 md:-mt-20 mb-8 flex flex-col md:flex-row gap-6">
