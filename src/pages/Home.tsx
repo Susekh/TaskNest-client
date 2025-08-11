@@ -14,12 +14,13 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ShinyText from "./ShinyText";
+import { BiSolidRightTopArrowCircle } from "react-icons/bi";
 
 const featureList = [
-  { id: 2, content: "Smart Sprint Planning", icon: Target },
-  { id: 3, content: "Dynamic Kanban Boards", icon: Layers },
-  { id: 4, content: "Deadline Tracking", icon: Clock },
-  { id: 5, content: "Team Task Assignment", icon: Users },
+  { id: 2, content: "Smart Sprint Planning", icon: Target, description: "AI-powered sprint recommendations, powered by gemini." },
+  { id: 3, content: "Dynamic Kanban Boards", icon: Layers, description: "Drag, drop, and automate your way to perfect workflow visualization." },
+  { id: 4, content: "Deadline Tracking", icon: Clock, description: "Never miss a deadline again." },
+  { id: 5, content: "Team Task Assignment", icon: Users, description: "Assign tasks to the members of your choice." },
 ];
 
 const capabilities: {
@@ -165,11 +166,11 @@ export default function Home() {
             </div>
 
             {/* Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto">
               {featureList.map((f) => (
                 <div
                   key={f.id}
-                  className="bg-white shadow-md dark:bg-[#1e2124] border border-gray-200 dark:border-[#40474f] rounded-lg  p-6 text-left hover:shadow-lg transition-all"
+                  className="bg-white shadow-md h-full dark:bg-[#1e2124] border border-gray-200 dark:border-[#40474f] rounded-lg  p-6 text-left hover:shadow-lg transition-all"
                 >
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-base font-semibold text-black dark:text-white leading-tight">
@@ -178,14 +179,8 @@ export default function Home() {
                     <f.icon className="w-5 h-5 text-gray-400 dark:text-gray-300" />
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                    This feature helps your team streamline workflows and stay
-                    aligned.
+                    {f.description}
                   </p>
-                  <div className="mt-6">
-                    <span className="inline-block text-black dark:text-white text-xl">
-                      →
-                    </span>
-                  </div>
                 </div>
               ))}
             </div>

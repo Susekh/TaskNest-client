@@ -8,31 +8,22 @@ import {
   Clock,
   Plus,
   BarChart3,
-  LucideIcon,
+  ArrowRight,
 } from "lucide-react";
 
 const featureList = [
-  { id: 1, content: "Setup in Under 60 Seconds", icon: Zap },
-  { id: 2, content: "Smart Sprint Planning", icon: Target },
-  { id: 3, content: "Dynamic Kanban Boards", icon: Layers },
-  { id: 4, content: "Deadline Tracking", icon: Clock },
-  { id: 5, content: "Team Task Assignment", icon: Users },
+  { id: 1, content: "Setup in Under 60 Seconds", icon: Zap, description: "Skip the complexity. One-click templates and guided setup get your team productive instantly." },
+  { id: 2, content: "Smart Sprint Planning", icon: Target, description: "AI-powered sprint recommendations based on team velocity and historical data." },
+  { id: 3, content: "Dynamic Kanban Boards", icon: Layers, description: "Drag, drop, and automate your way to perfect workflow visualization." },
 ];
 
-const capabilities: {
-  id: number;
-  title: string;
-  description: string;
-  icon: LucideIcon;
-  color: string;
-}[] = [
+const capabilities = [
   {
     id: 1,
     title: "Lightning Setup",
     description:
       "Get your team up and running in minutes. Pre-built templates, smart defaults, and guided onboarding.",
     icon: Zap,
-    color: "emerald",
   },
   {
     id: 2,
@@ -40,7 +31,6 @@ const capabilities: {
     description:
       "Plan, track, and deliver sprints efficiently. Built-in velocity tracking and burndown charts.",
     icon: Target,
-    color: "blue",
   },
   {
     id: 3,
@@ -48,7 +38,6 @@ const capabilities: {
     description:
       "Assign tasks with clear ownership, priorities, and due dates.",
     icon: Users,
-    color: "purple",
   },
   {
     id: 4,
@@ -56,7 +45,6 @@ const capabilities: {
     description:
       "Visualize workflow with drag-and-drop boards. Customize columns and automate transitions.",
     icon: Layers,
-    color: "orange",
   },
   {
     id: 5,
@@ -64,7 +52,6 @@ const capabilities: {
     description:
       "Stay on top of deadlines with smart notifications, calendar integration, and progress tracking.",
     icon: Calendar,
-    color: "red",
   },
   {
     id: 6,
@@ -72,7 +59,6 @@ const capabilities: {
     description:
       "Track team productivity, identify bottlenecks, and optimize workflow.",
     icon: BarChart3,
-    color: "indigo",
   },
 ];
 
@@ -102,76 +88,163 @@ const workflowSteps = [
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-black dark:text-white px-6 py-12">
-      <div className="max-w-6xl mx-auto space-y-20">
+    <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-black dark:text-white flex flex-col">
+      <main className="flex-grow px-10 py-8 flex flex-col items-center">
+        <div className="w-full max-w-4xl">
 
-        {/* Key Features */}
-        <section>
-          <h2 className="text-3xl font-bold mb-8 text-center">Key Features</h2>
-          <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-            {featureList.map((f) => (
-              <div
-                key={f.id}
-                className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] p-6 rounded-lg hover:scale-105 transform transition duration-100"
-              >
-                <f.icon className="w-6 h-6 mb-4 text-gray-800 dark:text-white" />
-                <p className="text-lg text-black dark:text-white">{f.content}</p>
+          {/* Key Features Section */}
+          <section className="my-20 w-full">
+            {/* Header */}
+            <div className="grid lg:grid-cols-2 gap-12 items-start max-w-6xl mx-auto mb-16">
+              {/* Left Column */}
+              <div>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
+                  TaskNet Features
+                </p>
+                <h2 className="text-5xl font-semibold text-black dark:text-white leading-tight">
+                  Everything you need to succeed
+                </h2>
               </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Workflow Steps */}
-        <section>
-          <h2 className="text-3xl font-bold mb-8 text-center">How It Works</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {workflowSteps.map((ws) => (
-              <div
-                key={ws.step}
-                className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] rounded-xl p-6 text-center hover:scale-105 transition-transform duration-100 shadow hover:shadow-xl"
-              >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-300 dark:bg-[#2c3035] flex items-center justify-center">
-                  <ws.icon className="w-8 h-8 text-gray-800 dark:text-white" />
-                </div>
-                <span className="block text-[#3b82f6] font-bold mb-2">
-                  {ws.step}
-                </span>
-                <h3 className="text-xl font-semibold mb-1 text-black dark:text-white">
-                  {ws.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  {ws.description}
+              {/* Right Column */}
+              <div>
+                <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-6">
+                  Discover powerful features designed to streamline your workflow. 
+                  From lightning-fast setup to advanced analytics, TaskNet provides 
+                  all the tools your team needs to excel.
                 </p>
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
 
-        {/* Capabilities */}
-        <section>
-          <h2 className="text-3xl font-bold mb-8 text-center">Platform Capabilities</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {capabilities.map((c) => (
-              <div
-                key={c.id}
-                className="bg-gray-100 dark:bg-[#1e2124] border border-gray-300 dark:border-[#40474f] p-6 rounded-lg hover:shadow-lg hover:scale-[1.02] transition duration-100"
-              >
+            {/* Feature Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto max-w-6xl">
+              {featureList.map((f) => (
                 <div
-                  className={`w-12 h-12 mb-4 flex items-center justify-center rounded-xl bg-${c.color}-600 dark:bg-${c.color}-500`}
+                  key={f.id}
+                  className="bg-white shadow-md dark:bg-[#1e2124] border border-gray-200 dark:border-[#40474f] rounded-lg p-6 text-left hover:shadow-lg transition-all"
                 >
-                  <c.icon className="w-6 h-6 text-white" />
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-base font-semibold text-black dark:text-white leading-tight">
+                      {f.content}
+                    </h3>
+                    <f.icon className="w-5 h-5 text-gray-400 dark:text-gray-300" />
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                    {f.description}
+                  </p>
+                  <div className="mt-6">
+                    <span className="inline-block text-black dark:text-white text-xl">
+                      →
+                    </span>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-black dark:text-white">
-                  {c.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300">
-                  {c.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Workflow Steps Section */}
+          <section className="py-24">
+            {/* Header - two-column layout */}
+            <div className="max-w-7xl mx-auto px-6 md:px-12 grid lg:grid-cols-2 gap-12 mb-16">
+              <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-gray-900 dark:text-white">
+                Get Started in 3 Simple Steps
+              </h2>
+
+              <p className="text-lg text-gray-600 dark:text-gray-300 md:pl-12">
+                Follow these quick milestones to launch your first project in
+                minutes and keep momentum from day one.
+              </p>
+            </div>
+
+            {/* 3-card grid */}
+            <div className="max-w-7xl mx-auto px-6 md:px-12 grid gap-6 md:grid-cols-3">
+              {workflowSteps.map((ws, i) => {
+                const pastel = [
+                  "bg-[#1e3a8a]/10 dark:bg-[#1e3a8a]/20",
+                  "bg-[#1e40af]/10 dark:bg-[#1e40af]/20",
+                  "bg-[#1e429f]/10 dark:bg-[#1e429f]/20",
+                ][i % 3];
+
+                return (
+                  <article
+                    key={ws.step}
+                    className={`${pastel} rounded-2xl p-8 flex flex-col shadow-sm hover:shadow-md transition`}
+                  >
+                    {/* Big step number */}
+                    <span className="text-4xl font-bold mb-1 text-gray-900 dark:text-gray-100">
+                      {ws.step}
+                    </span>
+
+                    {/* Title & description */}
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                      {ws.title}
+                    </h3>
+                    <p className="text-sm text-gray-800 dark:text-gray-300 flex-grow">
+                      {ws.description}
+                    </p>
+
+                    {/* Arrow bottom-right */}
+                    <ArrowRight className="w-5 h-5 self-end text-gray-900 dark:text-gray-100 mt-6" />
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Platform Capabilities Section */}
+          <section className="py-24">
+            {/* Header */}
+            <div className="max-w-7xl mx-auto px-6 md:px-12 grid lg:grid-cols-2 gap-12 mb-16">
+              <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-gray-900 dark:text-white">
+                A full spectrum of capabilities
+              </h2>
+
+              <p className="text-lg text-gray-600 dark:text-gray-300 md:pl-12">
+                Ready out-of-the-box solutions so you can plan, execute, and 
+                iterate without switching tools. Everything your team needs 
+                to deliver exceptional results.
+              </p>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-6 md:px-12 grid gap-6 lg:grid-cols-3 md:grid-cols-2">
+              {capabilities.map((c, i) => {
+                const pastel = [
+                  "bg-[#1e3a8a]/10",
+                  "bg-[#1e40af]/10",
+                  "bg-[#1e429f]/10",
+                  "bg-[#1e3a8a]/20",
+                  "bg-[#1e40af]/20",
+                  "bg-[#1e429f]/20",
+                ][i % 6];
+
+                return (
+                  <article
+                    key={c.id}
+                    className={`${pastel} rounded-2xl p-8 flex flex-col shadow-sm hover:shadow-md transition`}
+                  >
+                    {/* Icon top-left */}
+                    <div className="w-10 h-10 mb-6 bg-white bg-opacity-30 rounded-lg flex items-center justify-center">
+                      <c.icon className="h-6 w-6" />
+                    </div>
+
+                    {/* Title & description */}
+                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      {c.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">
+                      {c.description}
+                    </p>
+
+                    {/* Arrow bottom-right */}
+                    <ArrowRight className="w-5 h-5 self-end text-gray-700 mt-6" />
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+
+        </div>
+      </main>
     </div>
   );
 }
