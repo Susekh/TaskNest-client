@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ShinyText from "./ShinyText";
-import { BiSolidRightTopArrowCircle } from "react-icons/bi";
 
 const featureList = [
   { id: 2, content: "Smart Sprint Planning", icon: Target, description: "AI-powered sprint recommendations, powered by gemini." },

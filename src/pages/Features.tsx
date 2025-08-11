@@ -5,7 +5,6 @@ import {
   Calendar,
   Target,
   Layers,
-  Clock,
   Plus,
   BarChart3,
   ArrowRight,
