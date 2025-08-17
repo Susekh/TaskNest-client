@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ShinyText from "./ShinyText";
+import { motion } from "motion/react"
 
 const featureList = [
   { id: 2, content: "Smart Sprint Planning", icon: Target, description: "AI-powered sprint recommendations, powered by gemini." },
@@ -96,6 +97,17 @@ const workflowSteps = [
   },
 ];
 
+// fade-up animation
+const fadeUp = {
+  hidden: { opacity: 0, y: 10 },
+  show: {
+    opacity: 1,
+    y: 0
+  },
+};
+
+
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-white dark:bg-neutral-950 font-sans text-black dark:text-white flex flex-col">
@@ -130,9 +142,13 @@ export default function Home() {
 
           {/* Key Features */}
           <section className=" my-20 w-full">
-            {/* Header */}
-            <div className="grid lg:grid-cols-2 gap-12 items-start max-w-6xl mx-auto mb-16">
-              {/* Left Column */}
+            <motion.div
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="grid lg:grid-cols-2 gap-12 items-start max-w-6xl mx-auto mb-16"
+            >
               <div>
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
                   TaskNet
@@ -142,7 +158,6 @@ export default function Home() {
                 </h2>
               </div>
 
-              {/* Right Column */}
               <div>
                 <p className="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-6">
                   Built on a foundation of enterprise trust, TaskNet delivers
@@ -162,13 +177,16 @@ export default function Home() {
                   />
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto">
               {featureList.map((f) => (
-                <div
+                <motion.div
                   key={f.id}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true }}
+                  variants={fadeUp}
                   className="bg-white shadow-md h-full dark:bg-[#1e2124] border border-gray-200 dark:border-[#40474f] rounded-lg  p-6 text-left hover:shadow-lg transition-all"
                 >
                   <div className="flex justify-between items-start mb-4">
@@ -180,26 +198,29 @@ export default function Home() {
                   <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                     {f.description}
                   </p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </section>
 
-          {/* ─────────────  Workflow Steps  ───────────── */}
+          {/* Workflow Steps */}
           <section className="py-24">
-            {/* header – two-column like Jasper */}
-            <div className="max-w-7xl mx-auto px-6 md:px-12 grid lg:grid-cols-2 gap-12 mb-16">
+            <motion.div
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="max-w-7xl mx-auto px-6 md:px-12 grid lg:grid-cols-2 gap-12 mb-16"
+            >
               <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-gray-900 dark:text-white">
                 Get Started&nbsp;in 3&nbsp;Simple&nbsp;Steps
               </h2>
-
               <p className="text-lg text-gray-600 dark:text-gray-300 md:pl-12">
                 Follow these quick milestones to launch your first project in
                 minutes and keep momentum from day&nbsp;one.
               </p>
-            </div>
+            </motion.div>
 
-            {/* 3-card grid */}
             <div className="max-w-7xl mx-auto px-6 md:px-12 grid gap-6 md:grid-cols-3">
               {workflowSteps.map((ws, i) => {
                 const pastel = [
@@ -209,44 +230,47 @@ export default function Home() {
                 ][i % 3];
 
                 return (
-                  <article
+                  <motion.article
                     key={ws.step}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                    variants={fadeUp}
                     className={`${pastel} rounded-2xl p-8 flex flex-col shadow-sm hover:shadow-md transition`}
                   >
-                    {/* big step number */}
                     <span className="text-4xl font-bold mb-1 text-gray-900 dark:text-gray-100">
                       {ws.step}
                     </span>
-
-                    {/* title & description */}
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
                       {ws.title}
                     </h3>
                     <p className="text-sm text-gray-800 dark:text-gray-300 flex-grow">
                       {ws.description}
                     </p>
-
-                    {/* arrow bottom-right */}
                     <ArrowRight className="w-5 h-5 self-end text-gray-900 dark:text-gray-100 mt-6" />
-                  </article>
+                  </motion.article>
                 );
               })}
             </div>
           </section>
 
-          {/* ─────────────  Capabilities  ───────────── */}
+          {/* Capabilities */}
           <section className="py-24">
-            {/* header */}
-            <div className="max-w-7xl mx-auto px-6 md:px-12 grid lg:grid-cols-2 gap-12 mb-16">
+            <motion.div
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              className="max-w-7xl mx-auto px-6 md:px-12 grid lg:grid-cols-2 gap-12 mb-16"
+            >
               <h2 className="text-4xl md:text-5xl font-semibold leading-tight text-gray-900 dark:text-white">
                 Everything You Need&nbsp;to&nbsp;Succeed
               </h2>
-
               <p className="text-lg text-gray-600 dark:text-gray-300 md:pl-12">
                 A full spectrum of capabilities—ready out-of-the-box—so you can
                 plan, execute, and iterate without switching tools.
               </p>
-            </div>
+            </motion.div>
 
             <div className="max-w-7xl mx-auto px-6 md:px-12 grid gap-6 lg:grid-cols-3 md:grid-cols-2">
               {capabilities.map((c, i) => {
@@ -258,33 +282,38 @@ export default function Home() {
                 ][i % 4];
 
                 return (
-                  <article
+                  <motion.article
                     key={c.id}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                    variants={fadeUp}
                     className={`${pastel} rounded-2xl p-8 flex flex-col shadow-sm hover:shadow-md transition`}
                   >
-                    {/* icon top-left */}
                     <div className="w-10 h-10 mb-6 bg-white bg-opacity-30 rounded-lg flex items-center justify-center">
                       <c.icon className="h-6 w-6" />
                     </div>
-
-                    {/* title & description */}
                     <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300  mb-2">
                       {c.title}
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400 flex-grow">
                       {c.description}
                     </p>
-
-                    {/* arrow bottom-right */}
                     <ArrowRight className="w-5 h-5 self-end text-gray-700 mt-6" />
-                  </article>
+                  </motion.article>
                 );
               })}
             </div>
           </section>
 
           {/* CTA */}
-          <section className="text-center py-12 animate-fade-in delay-500">
+          <motion.section
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            className="text-center py-12 animate-fade-in delay-500"
+          >
             <h2 className="text-3xl font-bold mb-6 text-black dark:text-white">
               Ready to Transform Your Team's Productivity?
             </h2>
@@ -295,7 +324,7 @@ export default function Home() {
               <ShinyText text="Get Started Now" />
               <ArrowRight className="inline-block text-gray-400 w-5 h-5" />
             </Link>
-          </section>
+          </motion.section>
         </div>
       </main>
     </div>
